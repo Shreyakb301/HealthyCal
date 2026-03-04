@@ -1,0 +1,131 @@
+// Variables
+$primary-color: #2d6a4f;
+$secondary-color: #95d5b2;
+$text-color: #333;
+$font-stack: 'Arial', sans-serif;
+
+// Mixin for flexbox centering
+@mixin flex-center {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+// Base styles
+body {
+    font-family: $font-stack;
+    background-color: #f8f9fa;
+    color: $text-color;
+    margin: 0;
+    padding: 0;
+}
+
+// Header
+header {
+    background: $primary-color;
+    color: white;
+    padding: 1rem;
+
+    nav {
+        margin-top: 0.5rem;
+
+        a {
+            color: white;
+            margin-right: 1rem;
+            text-decoration: none;
+
+            &:hover {
+                text-decoration: underline;
+            }
+        }
+    }
+}
+
+// Headings
+h1,
+h2 {
+    font-family: 'Trebuchet MS', sans-serif;
+}
+
+// Layout: center main content
+main {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+}
+
+// Lists
+ul {
+    padding-left: 1.5rem;
+
+    li {
+        margin-bottom: 0.5rem;
+    }
+}
+
+// Tables
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+
+    th,
+    td {
+        border: 1px solid $secondary-color;
+        padding: 0.5rem;
+        text-align: left;
+    }
+
+    th {
+        background: $secondary-color;
+    }
+}
+
+// Forms
+form {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+
+    input[type="text"],
+    input[type="number"] {
+        padding: 0.5rem;
+        border: 1px solid #ccc;
+    }
+
+    input[type="submit"] {
+        background: $primary-color;
+        color: white;
+        padding: 0.5rem;
+        border: none;
+        cursor: pointer;
+
+        &:hover {
+            background: darken($primary-color, 10%);
+        }
+    }
+}
+
+// Footer
+footer {
+    @include flex-center;
+    background: $primary-color;
+    color: white;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+// Animation: fade-in effect
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+main {
+    animation: fadeIn 1.5s ease-in;
+}

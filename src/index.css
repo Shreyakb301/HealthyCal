@@ -1,0 +1,35 @@
+:root {
+    --primary-color: #2d6a4f;
+    --secondary-color: #95d5b2;
+    --text-color: #333;
+    --font-stack: 'Arial', sans-serif;
+}
+
+* {
+    box-sizing: border-box;
+}
+
+body {
+    font-family: var(--font-stack);
+    background-color: #f8f9fa;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+#root {
+    min-height: 100vh;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.fade-in {
+    animation: fadeIn 1.5s ease-in;
+}
