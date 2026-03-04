@@ -1,0 +1,118 @@
+:root {
+    --primary-color: #2d6a4f;
+    --secondary-color: #95d5b2;
+    --text-color: #333;
+    --font-stack: 'Arial', sans-serif;
+}
+
+body {
+    font-family: var(--font-stack);
+    background-color: #f8f9fa;
+    color: var(--text-color);
+    margin: 0;
+    padding: 0;
+}
+
+header {
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem;
+}
+
+header nav {
+    margin-top: 0.5rem;
+}
+
+header nav a {
+    color: white;
+    margin-right: 1rem;
+    text-decoration: none;
+}
+
+header nav a:hover {
+    text-decoration: underline;
+}
+
+h1,
+h2 {
+    font-family: 'Trebuchet MS', sans-serif;
+}
+
+main {
+    max-width: 800px;
+    margin: 2rem auto;
+    padding: 1rem;
+    animation: fadeIn 1.5s ease-in;
+}
+
+/* Lists */
+ul {
+    padding-left: 1.5rem;
+}
+
+ul li {
+    margin-bottom: 0.5rem;
+}
+
+table {
+    border-collapse: collapse;
+    width: 100%;
+    margin-top: 1rem;
+}
+
+table th,
+table td {
+    border: 1px solid var(--secondary-color);
+    padding: 0.5rem;
+    text-align: left;
+}
+
+table th {
+    background: var(--secondary-color);
+}
+
+form {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1rem;
+}
+
+form input[type="text"],
+form input[type="number"] {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+}
+
+form input[type="submit"] {
+    background: var(--primary-color);
+    color: white;
+    padding: 0.5rem;
+    border: none;
+    cursor: pointer;
+}
+
+form input[type="submit"]:hover {
+    background: #1e4a3a;
+    /* darken($primary-color, 10%) */
+}
+
+
+footer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background: var(--primary-color);
+    color: white;
+    padding: 1rem;
+    margin-top: 2rem;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
