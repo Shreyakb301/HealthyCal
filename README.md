@@ -75,9 +75,4 @@ See the server route files for full details: [server/routes/auth.js](server/rout
 - Unit/API tests: Jest + Supertest tests are located in `server/tests` (e.g. `server/tests/auth.test.js`).
 - Run all tests: `npm test` (this will start the app and run E2E + unit tests per `package.json`).
 
----
 
-If you'd like, I can also:
-- add a `.env.example` file,
-- add a short CONTRIBUTING.md, or
-- update the `test` script to behave differently. Tell me which and I'll proceed.

@@ -91,7 +91,7 @@ const MealLogPage = () => {
                 <article className="feature-card">
                     <h2>Add Meal</h2>
                     <form className="feature-form" onSubmit={handleSubmit}>
-                        <input name="name" placeholder="Meal name" value={formData.name} onChange={handleChange} />
+                        <input type="time" name="name" placeholder="Time" value={formData.name} onChange={handleChange} />
                         <input name="amount" placeholder="Portion (e.g., 1 bowl)" value={formData.amount} onChange={handleChange} />
                         <input name="calories" type="number" min="0" placeholder="Calories" value={formData.calories} onChange={handleChange} />
                         <select name="mealType" value={formData.mealType} onChange={handleChange}>
@@ -102,9 +102,9 @@ const MealLogPage = () => {
                         </select>
                         <input name="imageUrl" placeholder="Image URL (optional)" value={formData.imageUrl} onChange={handleChange} />
                         <div className="triple-grid">
-                            <input name="carbs" type="number" min="0" placeholder="Carbs (g)" value={formData.carbs} onChange={handleChange} />
-                            <input name="protein" type="number" min="0" placeholder="Protein (g)" value={formData.protein} onChange={handleChange} />
-                            <input name="fat" type="number" min="0" placeholder="Fat (g)" value={formData.fat} onChange={handleChange} />
+                            <input name="carbs" type="number" min="0" step="any" placeholder="Carbs (g)" value={formData.carbs} onChange={handleChange} />
+                            <input name="protein" type="number" min="0" step="any" placeholder="Protein (g)" value={formData.protein} onChange={handleChange} />
+                            <input name="fat" type="number" min="0" step="any" placeholder="Fat (g)" value={formData.fat} onChange={handleChange} />
                         </div>
                         <button type="submit">Save Meal</button>
                     </form>

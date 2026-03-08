@@ -4,7 +4,7 @@ import app from './app.js';
 
 dotenv.config();
 
-const PORT = process.env.PORT || 3000;
+const PORT = process.env.PORT || 5005;
 const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://127.0.0.1:27017/healthycal';
 
 async function start() {
