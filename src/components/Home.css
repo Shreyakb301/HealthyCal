@@ -194,10 +194,10 @@
 .card-grid {
     display: grid;
     gap: 1rem;
-    grid-template-columns: 2fr 1.1fr;
+    grid-template-columns: 2fr 1fr;
     grid-template-areas:
-        'meal tip'
-        'calories macros';
+        'calories tip'
+        'progress macro';
 }
 
 .card {
@@ -214,8 +214,8 @@
     font-size: 1.5rem;
 }
 
-.meal-card {
-    grid-area: meal;
+.daily-calories-card {
+    grid-area: calories;
 }
 
 .tip-card {
@@ -223,11 +223,11 @@
 }
 
 .progress-card {
-    grid-area: calories;
+    grid-area: progress;
 }
 
 .macro-card {
-    grid-area: macros;
+    grid-area: macro;
 }
 
 .card-head {
@@ -248,66 +248,193 @@
     text-decoration: none;
 }
 
-.meal-list {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0.8rem;
-}
-
-.meal-item {
-    background: var(--surface-soft);
-    border-radius: 14px;
-    padding: 0.65rem;
-}
-
-.meal-item img {
-    width: 100%;
-    height: 130px;
-    object-fit: cover;
-    border-radius: 12px;
-}
-
-.meal-item h3 {
-    margin: 0.55rem 0 0.2rem;
-    font-size: 1rem;
-}
-
-.meal-title {
-    margin: 0;
-    font-weight: 700;
-}
-
-.meal-meta {
-    margin-top: 0.2rem;
-    color: var(--text-soft);
-}
-
-.tip-card {
+/* Daily Calories Card Specifics */
+.daily-calories-card {
     display: flex;
     flex-direction: column;
-    gap: 0.45rem;
 }
 
-.tip-icon {
-    width: 46px;
-    height: 46px;
+.daily-calories-card h2 {
+    color: var(--text-soft);
+    font-size: 1.1rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+}
+
+.calories-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 2rem;
+    flex: 1;
+}
+
+.calories-main {
+    flex: 1;
+}
+
+.calories-numbers {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    margin-bottom: 0.25rem;
+}
+
+.calories-numbers .current {
+    font-size: 3rem;
+    font-weight: 800;
+    color: #1a2b1f;
+}
+
+.calories-numbers .goal {
+    font-size: 1.25rem;
+    color: var(--text-soft);
+    font-weight: 500;
+}
+
+.calories-remaining {
+    font-size: 1.1rem;
+    color: var(--text-soft);
+    font-weight: 500;
+    margin-bottom: 1.5rem;
+}
+
+.divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 1.5rem 0;
+}
+
+.macros-grid {
+    display: flex;
+    gap: 2.5rem;
+}
+
+.macro-item {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.macro-label {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    color: var(--text-soft);
+    font-weight: 500;
+    font-size: 0.95rem;
+}
+
+.macro-value {
+    font-size: 1.25rem;
+    font-weight: 700;
+    padding-left: 1.2rem;
+}
+
+.dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+}
+
+.dot.carbs {
+    background: #56ae6d;
+}
+
+.dot.protein {
+    background: #f09252;
+}
+
+.dot.fat {
+    background: #e75a5a;
+}
+
+.calories-chart {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.progress-ring-v2 {
+    --size: 160px;
+    width: var(--size);
+    height: var(--size);
     border-radius: 50%;
     display: grid;
     place-items: center;
-    font-size: 1.2rem;
-    background: #dbf0df;
+    position: relative;
+    background: conic-gradient(var(--accent-strong) var(--progress), #e2ece4 0);
+}
+
+.progress-ring-v2::before {
+    content: '';
+    position: absolute;
+    inset: 12px;
+    background: var(--surface);
+    border-radius: 50%;
+}
+
+.ring-center-v2 {
+    z-index: 1;
+    text-align: center;
+}
+
+.ring-center-v2 .percentage {
+    font-size: 1.75rem;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.ring-center-v2 .of-goal {
+    font-size: 0.85rem;
+    color: var(--text-soft);
+    font-weight: 600;
+}
+
+/* Wellness Tip Card */
+.tip-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+}
+
+.tip-icon {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    display: grid;
+    place-items: center;
+    font-size: 0.95rem;
+    font-weight: 700;
+    background: #d4efdb;
+    color: #1f4f2e;
+}
+
+.tip-card h2 {
+    color: #1a2b1f;
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+}
+
+.tip-card p {
+    color: #4a5a4e;
+    line-height: 1.6;
+    margin: 0;
 }
 
 .text-link {
     margin-top: auto;
-    color: var(--accent-strong);
+    color: #5aa271;
     font-weight: 700;
     text-decoration: none;
+    font-size: 0.95rem;
 }
 
+/* Restore Progress/Macro Rings */
 .progress-ring,
 .macro-ring {
-    --size: 220px;
+    --size: 180px;
     width: var(--size);
     height: var(--size);
     margin: 0.6rem auto;
@@ -325,23 +452,21 @@
 .macro-ring::before {
     content: '';
     position: absolute;
-    inset: 18px;
+    inset: 15px;
     background: var(--surface);
     border-radius: 50%;
 }
 
 .macro-ring {
-    background: conic-gradient(
-        #8fcf9f 0 var(--carbs),
-        #f2c078 var(--carbs) calc(var(--carbs) + var(--protein)),
-        #de9a6d calc(var(--carbs) + var(--protein)) calc(var(--carbs) + var(--protein) + var(--fat)),
-        var(--progress-bg) 0
-    );
+    background: conic-gradient(#8fcf9f 0 var(--carbs),
+            #f2c078 var(--carbs) calc(var(--carbs) + var(--protein)),
+            #de9a6d calc(var(--carbs) + var(--protein)) calc(var(--carbs) + var(--protein) + var(--fat)),
+            var(--progress-bg) 0);
 }
 
 .ring-center {
     z-index: 1;
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     font-weight: 700;
     text-align: center;
 }
@@ -367,15 +492,15 @@
     color: var(--text-soft);
 }
 
-.dot {
+.macro-legend .dot {
     width: 10px;
     height: 10px;
-    border-radius: 50%;
 }
 
-.dot.carbs { background: #8fcf9f; }
-.dot.protein { background: #f2c078; }
-.dot.fat { background: #de9a6d; }
+.meal-list,
+.meal-item {
+    display: none;
+}
 
 .state-card,
 .guest-panel {
@@ -399,10 +524,10 @@
     .card-grid {
         grid-template-columns: 1fr;
         grid-template-areas:
-            'meal'
-            'tip'
             'calories'
-            'macros';
+            'tip'
+            'progress'
+            'macro';
     }
 
     .meal-list {
@@ -429,6 +554,7 @@
     0% {
         transform: translate3d(0, 0, 0) scale(1);
     }
+
     100% {
         transform: translate3d(2%, -2%, 0) scale(1.05);
     }
@@ -438,9 +564,11 @@
     0% {
         transform: translate3d(0, 0, 0);
     }
+
     50% {
         transform: translate3d(-1.5%, 1.5%, 0);
     }
+
     100% {
         transform: translate3d(1%, -1%, 0);
     }

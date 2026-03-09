@@ -61,27 +61,44 @@ const Home = () => {
 
             {!loading && !error && (
                 <div className="card-grid">
-                    <article className="card meal-card">
-                        <div className="card-head">
-                            <h2>Daily Meal Log</h2>
-                            <Link to="/meal-log" className="text-action">View All</Link>
-                        </div>
-
-                        <div className="meal-list">
-                            {mealOrder.map(({ key, label }) => {
-                                const meal = dashboard?.dailyMeals?.[key];
-                                return (
-                                    <div key={key} className="meal-item">
-                                        <img
-                                            src={meal?.imageUrl || fallbackImg}
-                                            alt={meal?.name ? `${meal.name}` : `${label} placeholder`}
-                                        />
-                                        <h3>{label}</h3>
-                                        <p className="meal-title">{meal?.name || 'No meal logged'}</p>
-                                        <p className="meal-meta">{meal?.calories ?? 0} calories</p>
+                    <article className="card daily-calories-card">
+                        <h2>Daily Calories</h2>
+                        <div className="calories-content">
+                            <div className="calories-main">
+                                <div className="calories-numbers">
+                                    <span className="current">{calories.totalCaloriesConsumed.toLocaleString()}</span>
+                                    <span className="goal">/ {calories.dailyCalorieGoal.toLocaleString()} kcal</span>
+                                </div>
+                                <div className="calories-remaining">
+                                    {Math.max(0, calories.dailyCalorieGoal - calories.totalCaloriesConsumed).toLocaleString()} kcal remaining
+                                </div>
+                                <hr className="divider" />
+                                <div className="macros-grid">
+                                    <div className="macro-item">
+                                        <div className="macro-label"><span className="dot carbs" /> Carbs</div>
+                                        <div className="macro-value">{dashboard?.macronutrientSummary?.totals?.carbs || 0}g</div>
                                     </div>
-                                );
-                            })}
+                                    <div className="macro-item">
+                                        <div className="macro-label"><span className="dot protein" /> Protein</div>
+                                        <div className="macro-value">{dashboard?.macronutrientSummary?.totals?.protein || 0}g</div>
+                                    </div>
+                                    <div className="macro-item">
+                                        <div className="macro-label"><span className="dot fat" /> Fat</div>
+                                        <div className="macro-value">{dashboard?.macronutrientSummary?.totals?.fat || 0}g</div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div className="calories-chart">
+                                <div
+                                    className="progress-ring-v2"
+                                    style={{ '--progress': `${calorieProgress}%` }}
+                                >
+                                    <div className="ring-center-v2">
+                                        <div className="percentage">{Math.round(calorieProgress)}%</div>
+                                        <div className="of-goal">of goal</div>
+                                    </div>
+                                </div>
+                            </div>
                         </div>
                     </article>
 
@@ -92,6 +109,7 @@ const Home = () => {
                         <Link to="/wellness-tips" className="text-link">Learn More</Link>
                     </article>
 
+                    {/* Restored Cards */}
                     <article className="card progress-card">
                         <h2>Calories Consumed</h2>
                         <div

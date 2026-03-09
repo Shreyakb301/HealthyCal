@@ -45,19 +45,26 @@ const NutritionPage = () => {
     }, [summary]);
 
     return (
-        <AppShell title="Nutrition" subtitle={macroSummary}>
-            <section className="feature-layout single-column">
-                <article className="feature-card">
-                    <h2>Nutrition Search</h2>
-                    <div className="search-row">
-                        <input
-                            value={query}
-                            onChange={(event) => setQuery(event.target.value)}
-                            placeholder="Search foods like salmon, quinoa, avocado"
-                        />
-                        <button type="button" onClick={handleSearch}>Search</button>
+        <AppShell title="Nutrition" subtitle="Search and explore food nutrition data">
+            <section className="feature-layout single-column nutrition-container">
+                <article className="feature-card search-card">
+                    <h3>Nutrition Search</h3>
+                    <div className="search-box-wrapper">
+                        <div className="search-input-container">
+                            <svg className="search-icon" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                                <circle cx="11" cy="11" r="8"></circle>
+                                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+                            </svg>
+                            <input
+                                value={query}
+                                onChange={(event) => setQuery(event.target.value)}
+                                placeholder="Search foods like salmon, quinoa, avocado..."
+                            />
+                        </div>
+                        <button type="button" className="search-btn" onClick={handleSearch}>Search</button>
                     </div>
                     {error && <p className="inline-error">{error}</p>}
+
                     {results.length > 0 && (
                         <div className="table-wrap">
                             <table className="nutrition-table">
@@ -84,20 +91,21 @@ const NutritionPage = () => {
                     )}
                 </article>
 
-                <article className="feature-card">
-                    <h2>Popular Foods</h2>
+                <article className="feature-card popular-card">
+                    <h3>Popular Foods</h3>
                     <div className="pill-list">
                         {popularFoods.map((food) => (
                             <button
                                 key={food.id}
                                 type="button"
-                                className="pill"
+                                className="food-pill"
                                 onClick={() => {
                                     setQuery(food.name);
                                     setResults([food]);
                                 }}
                             >
-                                {food.name} ({food.calories} cal)
+                                <span className="food-name">{food.name}</span>
+                                <span className="food-cal">({food.calories} cal)</span>
                             </button>
                         ))}
                     </div>
