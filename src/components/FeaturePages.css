@@ -1,29 +1,31 @@
 .feature-layout {
     display: grid;
-    gap: 1rem;
-    grid-template-columns: 1.1fr 1.4fr;
+    gap: 2rem;
+    grid-template-columns: 1fr 1.5fr;
 }
 
 .feature-layout.single-column {
     grid-template-columns: 1fr;
+    max-width: 1000px;
+    margin: 0 auto;
 }
 
 .feature-card {
     background: var(--surface);
-    border: 1px solid var(--border);
-    border-radius: 18px;
-    box-shadow: var(--shadow);
-    padding: 1rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+    padding: 2rem;
 }
 
 .feature-card h2,
 .feature-card h3 {
+    font-family: 'Outfit', sans-serif;
     margin-top: 0;
-    margin-bottom: 1.25rem;
-    font-size: 1.2rem;
+    margin-bottom: 1.75rem;
+    font-size: 1.35rem;
     font-weight: 700;
-    color: #1a2b1f;
-    /* Darker headers */
+    color: var(--primary);
 }
 
 .nutrition-container {
@@ -52,20 +54,21 @@
 
 .search-input-container input {
     width: 100%;
-    padding: 1.1rem 1.25rem 1.1rem 3.5rem;
-    border-radius: 16px;
-    border: 1px solid #e2ece4;
-    background: #f1f7f3;
-    /* Matching the soft inner background */
+    padding: 1.25rem 1.5rem 1.25rem 3.75rem;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border);
+    background: #f8faf9;
     font-size: 1.1rem;
-    transition: all 0.2s ease;
+    font-family: inherit;
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.02);
 }
 
 .search-input-container input:focus {
     outline: none;
-    border-color: var(--accent-strong);
+    border-color: var(--primary-light);
     background: #fff;
-    box-shadow: 0 0 0 3px rgba(90, 162, 113, 0.1);
+    box-shadow: 0 0 0 4px rgba(90, 162, 113, 0.1);
 }
 
 .search-btn {
@@ -136,16 +139,25 @@
 .feature-form {
     display: grid;
     gap: 0.75rem;
+    grid-auto-rows: max-content;
 }
 
 .feature-form input,
 .feature-form select {
     width: 100%;
-    padding: 0.72rem 0.8rem;
-    border-radius: 12px;
+    padding: 0.85rem 1.1rem;
+    border-radius: var(--radius-sm);
     border: 1px solid var(--border);
-    background: var(--surface-soft);
+    background: #f8faf9;
     color: var(--text);
+    font-size: 1rem;
+    transition: all 0.2s;
+}
+
+.feature-form input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+    background: #fff;
 }
 
 .feature-form button,
@@ -198,6 +210,17 @@
     gap: 0.6rem;
 }
 
+.triple-grid input {
+    font-size: 0.82rem;
+    padding: 0.85rem 0.6rem;
+}
+
+.search-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0.6rem;
+}
+
 /* Meal Log Redesign Styles */
 .meal-log-page-wrapper {
     display: flex;
@@ -209,6 +232,41 @@
     display: grid;
     grid-template-columns: 1.1fr 1.4fr;
     gap: 1.5rem;
+    align-items: start;
+}
+
+.add-meal-card {
+    display: flex;
+    flex-direction: column;
+}
+
+.add-meal-card .feature-form {
+    display: flex;
+    flex-direction: column;
+    gap: 0.9rem;
+    flex: 1;
+}
+
+.add-meal-card .save-meal-btn {
+    margin-top: 1.5rem;
+    width: 100%;
+    border-radius: var(--radius-sm) !important;
+    padding: 0.9rem !important;
+    font-size: 1rem;
+    background: var(--primary) !important;
+    color: white !important;
+    border: none !important;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.add-meal-card .save-meal-btn:hover {
+    background: #123520 !important;
+}
+
+.meal-log-top-grid .feature-card {
+    box-sizing: border-box;
 }
 
 .card-header-with-icon {
@@ -281,16 +339,18 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 1rem 1.25rem;
-    background: #f8faf9;
-    border-radius: 14px;
-    border: 1px solid #e2ece4;
-    transition: transform 0.2s ease;
+    padding: 1.25rem 1.5rem;
+    background: #fbfdfc;
+    border-radius: var(--radius-sm);
+    border: 1px solid var(--border-soft);
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .search-result-item:hover {
-    transform: translateY(-2px);
-    background: #f0f7f2;
+    background: #fff;
+    border-color: var(--primary-light);
+    transform: translateX(6px);
+    box-shadow: var(--shadow-sm);
 }
 
 .food-details {
@@ -731,19 +791,19 @@
 
 .well-tip-card {
     background: #fff;
-    border: 1px solid #e1ede5;
-    border-radius: 20px;
-    padding: 1.5rem;
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 2.5rem;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    transition: all 0.2s ease;
-    box-shadow: 0 4px 12px rgba(80, 120, 90, 0.03);
+    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: var(--shadow-sm);
 }
 
 .well-tip-card:hover {
-    transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(80, 120, 90, 0.08);
+    transform: translateY(-8px);
+    box-shadow: var(--shadow-lg);
 }
 
 .well-tip-card.featured-card {
@@ -841,4 +901,331 @@
     .wellness-tips-grid {
         grid-template-columns: 1fr;
     }
+}
+
+.history-date-header {
+    font-size: 0.85rem;
+    font-weight: 800;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--text-muted);
+    margin: 1.5rem 0 0.75rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.history-group:first-child .history-date-header {
+    margin-top: 0;
+}
+
+.list-grid.grouped-history {
+    display: flex;
+    flex-direction: column;
+    gap: 0;
+}
+
+/* ═══════════════════════════════════════════
+   MEAL LOG — DATE NAVIGATION
+═══════════════════════════════════════════ */
+
+.date-nav-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: var(--radius-md);
+    padding: 1.25rem 1.75rem;
+    margin-bottom: 1.5rem;
+    box-shadow: var(--shadow-sm);
+}
+
+.date-nav-btn {
+    width: 40px;
+    height: 40px;
+    border-radius: 12px;
+    border: 1px solid var(--border);
+    background: var(--bg);
+    color: var(--text);
+    display: grid;
+    place-items: center;
+    cursor: pointer;
+    transition: all 0.2s;
+    flex-shrink: 0;
+}
+
+.date-nav-btn:hover:not(:disabled) {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.date-nav-btn:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.date-nav-center {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.2rem;
+}
+
+.date-display-label {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.4rem;
+    font-weight: 700;
+    color: var(--primary);
+    letter-spacing: -0.02em;
+}
+
+.date-display-sub {
+    font-size: 0.85rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+.date-nav-right-group {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.date-picker-input {
+    border: 1px solid var(--border);
+    background: var(--bg);
+    border-radius: 10px;
+    padding: 0.5rem 0.75rem;
+    font-size: 0.85rem;
+    color: var(--text);
+    font-family: inherit;
+    cursor: pointer;
+}
+
+.date-picker-input:focus {
+    outline: none;
+    border-color: var(--primary-light);
+}
+
+.today-btn {
+    padding: 0.5rem 1.1rem;
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 10px;
+    font-size: 0.85rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.today-btn:hover {
+    background: #123520;
+}
+
+/* ─── Day Summary Strip ─── */
+.day-summary-strip {
+    display: flex;
+    gap: 1rem;
+    margin-bottom: 2rem;
+    flex-wrap: wrap;
+}
+
+.summary-pill {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.15rem;
+    background: var(--surface);
+    border: 1px solid var(--border-soft);
+    border-radius: 14px;
+    padding: 0.9rem 1.5rem;
+    flex: 1;
+    min-width: 80px;
+    box-shadow: var(--shadow-sm);
+}
+
+.pill-val {
+    font-family: 'Outfit', sans-serif;
+    font-size: 1.35rem;
+    font-weight: 800;
+    color: var(--primary);
+}
+
+.pill-label {
+    font-size: 0.75rem;
+    font-weight: 700;
+    color: var(--text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.carbs-pill .pill-val {
+    color: #2e7d32;
+}
+
+.protein-pill .pill-val {
+    color: #c47000;
+}
+
+.fat-pill .pill-val {
+    color: #c62828;
+}
+
+/* ─── Meals by type ─── */
+.meals-by-type-card {
+    overflow-y: auto;
+}
+
+.meals-type-list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+}
+
+.meal-type-section {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.meal-type-header {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    padding-bottom: 0.6rem;
+    border-bottom: 1px solid var(--border-soft);
+}
+
+.meal-type-icon {
+    font-size: 1.1rem;
+}
+
+.meal-type-label {
+    flex: 1;
+    font-weight: 700;
+    font-size: 0.9rem;
+    text-transform: capitalize;
+    color: var(--text);
+}
+
+.meal-type-cals {
+    font-size: 0.82rem;
+    font-weight: 700;
+    color: var(--primary);
+    background: #eef3f0;
+    border-radius: 20px;
+    padding: 0.25rem 0.7rem;
+}
+
+.meal-entry-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0.6rem 0.75rem;
+    border-radius: 10px;
+    background: #f8faf9;
+    transition: background 0.15s;
+}
+
+.meal-entry-row:hover {
+    background: #eef3f0;
+}
+
+.meal-entry-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.15rem;
+}
+
+.meal-entry-name {
+    font-size: 0.92rem;
+    font-weight: 700;
+    color: var(--text);
+}
+
+.meal-entry-meta {
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    font-weight: 500;
+}
+
+/* ─── Empty & loading states ─── */
+.empty-day-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.6rem;
+    padding: 3rem 1rem;
+    color: var(--text-muted);
+    text-align: center;
+}
+
+.empty-day-state .empty-icon {
+    font-size: 3rem;
+}
+
+.empty-day-state p {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+    color: var(--text);
+}
+
+.empty-day-state span {
+    font-size: 0.9rem;
+}
+
+.loading-state {
+    padding: 2rem;
+    text-align: center;
+    color: var(--text-muted);
+}
+
+/* ─── Form date note ─── */
+.form-date-note {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding: 0.6rem 0;
+}
+
+.form-date-note strong {
+    color: var(--primary);
+}
+
+/* ─── Inline search button ─── */
+.search-inline-btn {
+    position: absolute;
+    right: 0.75rem;
+    top: 50%;
+    transform: translateY(-50%);
+    background: var(--primary);
+    color: white;
+    border: none;
+    border-radius: 8px;
+    padding: 0.4rem 0.9rem;
+    font-size: 0.82rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-inline-btn:hover {
+    background: #123520;
+}
+
+/* ─── Inline success ─── */
+.inline-success {
+    color: #166534;
+    background: #f0fdf4;
+    border: 1px solid #86efac;
+    border-radius: 10px;
+    padding: 0.7rem 1.2rem;
+    font-size: 0.9rem;
+    font-weight: 600;
+    margin-bottom: 1rem;
 }

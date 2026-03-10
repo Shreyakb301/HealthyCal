@@ -62,7 +62,10 @@ const Home = () => {
             {!loading && !error && (
                 <div className="card-grid">
                     <article className="card daily-calories-card">
-                        <h2>Daily Calories</h2>
+                        <div className="card-header">
+                            <h2>Daily Calories</h2>
+                            <p className="subtle-metric">Today's track</p>
+                        </div>
                         <div className="calories-content">
                             <div className="calories-main">
                                 <div className="calories-numbers">
@@ -72,7 +75,7 @@ const Home = () => {
                                 <div className="calories-remaining">
                                     {Math.max(0, calories.dailyCalorieGoal - calories.totalCaloriesConsumed).toLocaleString()} kcal remaining
                                 </div>
-                                <hr className="divider" />
+
                                 <div className="macros-grid">
                                     <div className="macro-item">
                                         <div className="macro-label"><span className="dot carbs" /> Carbs</div>
@@ -103,42 +106,57 @@ const Home = () => {
                     </article>
 
                     <article className="card tip-card">
-                        <div className="tip-icon">Tip</div>
-                        <h2>Wellness Tip</h2>
-                        <p>{dashboard?.wellnessTip?.message || 'No tip available for today.'}</p>
-                        <Link to="/wellness-tips" className="text-link">Learn More</Link>
+                        <div className="tip-header">
+                            <div className="tip-icon-orb">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"></path></svg>
+                            </div>
+                            <span className="tip-tag">Daily Insight</span>
+                        </div>
+                        <div className="tip-body">
+                            <h2>Wellness Tip</h2>
+                            <p>{dashboard?.wellnessTip?.message || 'Focus on nutrient-dense foods today to keep your energy levels steady throughout the afternoon.'}</p>
+                        </div>
+                        <Link to="/wellness-tips" className="text-link">
+                            Explore more tips
+                            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><line x1="5" y1="12" x2="19" y2="12"></line><polyline points="12 5 19 12 12 19"></polyline></svg>
+                        </Link>
                     </article>
 
-                    {/* Restored Cards */}
                     <article className="card progress-card">
                         <h2>Calories Consumed</h2>
-                        <div
-                            className="progress-ring"
-                            style={{ '--progress': `${calorieProgress}%` }}
-                        >
-                            <div className="ring-center">
-                                {calories.totalCaloriesConsumed} / {calories.dailyCalorieGoal}
+                        <div className="ring-container-centered">
+                            <div
+                                className="progress-ring-v2 primary-ring"
+                                style={{ '--progress': `${calorieProgress}%` }}
+                            >
+                                <div className="ring-center-v2">
+                                    <div className="ring-label-lg">{calories.totalCaloriesConsumed} / {calories.dailyCalorieGoal}</div>
+                                </div>
                             </div>
                         </div>
                     </article>
 
                     <article className="card macro-card">
                         <h2>Macronutrients</h2>
-                        <div
-                            className="macro-ring"
-                            style={{
-                                '--carbs': `${macroAngles.carbs}%`,
-                                '--protein': `${macroAngles.protein}%`,
-                                '--fat': `${macroAngles.fat}%`
-                            }}
-                        >
-                            <div className="ring-center small">Today</div>
+                        <div className="macro-card-flex-content">
+                            <div
+                                className="macro-donut-premium"
+                                style={{
+                                    '--carbs': `${macroAngles.carbs}%`,
+                                    '--protein': `${macroAngles.protein}%`,
+                                    '--fat': `${macroAngles.fat}%`
+                                }}
+                            >
+                                <div className="ring-center-v2">
+                                    <span className="center-text-muted">Today</span>
+                                </div>
+                            </div>
+                            <ul className="macro-legend-premium">
+                                <li><span className="dot carbs" />Carbs {macroAngles.carbs}%</li>
+                                <li><span className="dot protein" />Protein {macroAngles.protein}%</li>
+                                <li><span className="dot fat" />Fat {macroAngles.fat}%</li>
+                            </ul>
                         </div>
-                        <ul className="macro-legend">
-                            <li><span className="dot carbs" />Carbs {macroAngles.carbs}%</li>
-                            <li><span className="dot protein" />Protein {macroAngles.protein}%</li>
-                            <li><span className="dot fat" />Fat {macroAngles.fat}%</li>
-                        </ul>
                     </article>
                 </div>
             )}

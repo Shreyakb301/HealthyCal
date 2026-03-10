@@ -9,10 +9,7 @@ const SettingsPage = () => {
         dailyCalorieGoal: 2000,
         carbGoal: 250,
         proteinGoal: 120,
-        fatGoal: 65,
-        notificationsEnabled: true,
-        mealRemindersEnabled: false,
-        waterRemindersEnabled: true
+        fatGoal: 65
     });
     const [status, setStatus] = useState('');
 
@@ -29,10 +26,7 @@ const SettingsPage = () => {
                     dailyCalorieGoal: s.dailyCalorieGoal || 2000,
                     carbGoal: s.carbGoal || 250,
                     proteinGoal: s.proteinGoal || 120,
-                    fatGoal: s.fatGoal || 65,
-                    notificationsEnabled: s.notificationsEnabled ?? true,
-                    mealRemindersEnabled: s.mealRemindersEnabled ?? false,
-                    waterRemindersEnabled: s.waterRemindersEnabled ?? true
+                    fatGoal: s.fatGoal || 65
                 });
 
                 if (userData.user) {
@@ -67,10 +61,7 @@ const SettingsPage = () => {
                 dailyCalorieGoal: s.dailyCalorieGoal,
                 carbGoal: s.carbGoal,
                 proteinGoal: s.proteinGoal,
-                fatGoal: s.fatGoal,
-                notificationsEnabled: s.notificationsEnabled,
-                mealRemindersEnabled: s.mealRemindersEnabled,
-                waterRemindersEnabled: s.waterRemindersEnabled
+                fatGoal: s.fatGoal
             });
             setStatus('Settings saved.');
             setTimeout(() => setStatus(''), 3000);
@@ -168,48 +159,6 @@ const SettingsPage = () => {
                     </div>
                 </article>
 
-                {/* Notifications Section */}
-                <article className="settings-card notifications-section">
-                    <div className="settings-section-title">
-                        <div className="section-icon-wrap bell-icon">
-                            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
-                        </div>
-                        <h3>Notifications</h3>
-                    </div>
-
-                    <div className="notification-list">
-                        <div className="notification-item">
-                            <div className="notification-text">
-                                <div className="notif-label">Enable notifications</div>
-                                <div className="notif-desc">Get reminders and daily tips</div>
-                            </div>
-                            <Switch
-                                checked={settings.notificationsEnabled}
-                                onChange={(val) => handleChange('notificationsEnabled', val)}
-                            />
-                        </div>
-                        <div className="notification-item">
-                            <div className="notification-text">
-                                <div className="notif-label">Meal reminders</div>
-                                <div className="notif-desc">Remind me to log meals throughout the day</div>
-                            </div>
-                            <Switch
-                                checked={settings.mealRemindersEnabled}
-                                onChange={(val) => handleChange('mealRemindersEnabled', val)}
-                            />
-                        </div>
-                        <div className="notification-item">
-                            <div className="notification-text">
-                                <div className="notif-label">Water reminders</div>
-                                <div className="notif-desc">Remind me to drink water regularly</div>
-                            </div>
-                            <Switch
-                                checked={settings.waterRemindersEnabled}
-                                onChange={(val) => handleChange('waterRemindersEnabled', val)}
-                            />
-                        </div>
-                    </div>
-                </article>
 
                 <div className="settings-actions">
                     <button type="button" className="save-btn" onClick={handleSave}>

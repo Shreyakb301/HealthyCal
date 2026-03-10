@@ -44,18 +44,6 @@ const userSchema = new mongoose.Schema({
         darkMode: {
             type: Boolean,
             default: false
-        },
-        notificationsEnabled: {
-            type: Boolean,
-            default: true
-        },
-        mealRemindersEnabled: {
-            type: Boolean,
-            default: false
-        },
-        waterRemindersEnabled: {
-            type: Boolean,
-            default: true
         }
     },
     createdAt: {

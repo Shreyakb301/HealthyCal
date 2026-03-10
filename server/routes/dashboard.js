@@ -136,4 +136,47 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/weekly', async (req, res) => {
+    try {
+        const days = [];
+        const now = new Date();
+
+        for (let i = 6; i >= 0; i--) {
+            const start = new Date(now);
+            start.setDate(now.getDate() - i);
+            start.setHours(0, 0, 0, 0);
+
+            const end = new Date(start);
+            end.setDate(start.getDate() + 1);
+
+            const meals = await Meal.find({
+                userId: req.user._id,
+                date: { $gte: start, $lt: end }
+            }).lean();
+
+            const calories = meals.reduce((sum, m) => sum + toNumber(m.calories), 0);
+            const macros = meals.reduce(
+                (acc, m) => ({
+                    carbs: acc.carbs + toNumber(m?.macros?.carbs),
+                    protein: acc.protein + toNumber(m?.macros?.protein),
+                    fat: acc.fat + toNumber(m?.macros?.fat)
+                }),
+                { carbs: 0, protein: 0, fat: 0 }
+            );
+
+            days.push({
+                date: start.toISOString().slice(0, 10),
+                label: start.toLocaleDateString('en-US', { weekday: 'short' }),
+                calories,
+                macros
+            });
+        }
+
+        res.json({ days });
+    } catch (error) {
+        console.error('Error fetching weekly summary:', error);
+        res.status(500).json({ message: 'Server error', error: error.message });
+    }
+});
+
 export default router;

@@ -76,8 +76,14 @@ export const authAPI = {
 
 // Meals API
 export const mealsAPI = {
-    getAll: async () => {
-        const data = await apiRequest('/meals');
+    getAll: async (date) => {
+        const qs = date ? `?date=${date}` : '';
+        const data = await apiRequest(`/meals${qs}`);
+        return data.meals || [];
+    },
+
+    getByDate: async (dateStr) => {
+        const data = await apiRequest(`/meals?date=${dateStr}`);
         return data.meals || [];
     },
 
@@ -113,6 +119,9 @@ export const mealsAPI = {
 export const dashboardAPI = {
     getSummary: async () => {
         return apiRequest('/dashboard');
+    },
+    getWeekly: async () => {
+        return apiRequest('/dashboard/weekly');
     }
 };
 

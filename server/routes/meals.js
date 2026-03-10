@@ -42,10 +42,24 @@ const normalizeMealPayload = (body, existingMeal = null) => {
     return payload;
 };
 
-// Get all meals for the authenticated user
+// Get all meals for the authenticated user, optionally filtered by date (?date=YYYY-MM-DD)
 router.get('/', async (req, res) => {
     try {
-        const meals = await Meal.find({ userId: req.user._id })
+        const query = { userId: req.user._id };
+
+        if (req.query.date) {
+            // Parse and create start/end of the requested local day
+            const day = new Date(req.query.date);
+            if (!isNaN(day)) {
+                const start = new Date(day);
+                start.setHours(0, 0, 0, 0);
+                const end = new Date(day);
+                end.setHours(23, 59, 59, 999);
+                query.date = { $gte: start, $lte: end };
+            }
+        }
+
+        const meals = await Meal.find(query)
             .sort({ date: -1 })
             .select('-__v');
 

@@ -32,7 +32,10 @@ const Login = ({ onToggle }) => {
 
     return (
         <div className="auth-form">
-            <h2>Login</h2>
+            <header className="auth-header">
+                <img src="/logo.png" alt="HealthyCal Logo" className="auth-logo" />
+                <h1>HealthyCal</h1>
+            </header>
             {error && <div className="error-message">{error}</div>}
             <form onSubmit={handleSubmit}>
                 <label htmlFor="email">Email:</label>

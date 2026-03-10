@@ -9,6 +9,7 @@ import NutritionPage from './components/NutritionPage';
 import WellnessTipsPage from './components/WellnessTipsPage';
 import SettingsPage from './components/SettingsPage';
 import ProfilePage from './components/ProfilePage';
+import TrendsPage from './components/TrendsPage';
 import './App.css';
 
 const App = () => {
@@ -20,6 +21,7 @@ const App = () => {
                         <Routes>
                             <Route path="/" element={<Home />} />
                             <Route path="/meal-log" element={<MealLogPage />} />
+                            <Route path="/trends" element={<TrendsPage />} />
                             <Route path="/nutrition" element={<NutritionPage />} />
                             <Route path="/wellness-tips" element={<WellnessTipsPage />} />
                             <Route path="/settings" element={<SettingsPage />} />
