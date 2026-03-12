@@ -3,7 +3,12 @@ import mongoose from 'mongoose';
 const macroSchema = new mongoose.Schema({
     carbs: { type: Number, default: 0, min: 0 },
     protein: { type: Number, default: 0, min: 0 },
-    fat: { type: Number, default: 0, min: 0 }
+    fat: { type: Number, default: 0, min: 0 },
+    fiber: { type: Number, default: 0, min: 0 },
+    sugar: { type: Number, default: 0, min: 0 },
+    sodium: { type: Number, default: 0, min: 0 },
+    cholesterol: { type: Number, default: 0, min: 0 },
+    saturatedFat: { type: Number, default: 0, min: 0 }
 }, { _id: false });
 
 const mealSchema = new mongoose.Schema({

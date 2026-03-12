@@ -1,34 +1,42 @@
 :root {
-    --primary: #1a4d2e;
-    --primary-light: #5aa271;
-    --text: #1a2b1f;
-    --font-heading: 'Outfit', sans-serif;
-    --font-body: 'Inter', sans-serif;
+  --primary: #1a4d2e;
+  --primary-dark: #123520;
+  --primary-light: #5aa271;
+  --primary-color: #1a4d2e;
+  --secondary-color: #eef5f1;
+  --text: #1a2b1f;
+  --text-muted: #6b7f72;
+  --surface: #ffffff;
+  --surface-soft: #f8faf9;
+  --border: #e2ece4;
+  --border-soft: #f0f4f1;
+  --accent: #e8dfca;
+  --accent-strong: #5aa271;
+  --font-heading: 'Outfit', sans-serif;
+  --font-body: 'Inter', sans-serif;
 }
 
 * {
-    box-sizing: border-box;
-    margin: 0;
-    padding: 0;
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
 }
 
 body {
-    font-family: var(--font-body);
-    background-color: #f8faf9;
-    color: var(--text);
-    -webkit-font-smoothing: antialiased;
+  font-family: var(--font-body);
+  background-color: #f8faf9;
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-
-    to {
-        opacity: 1;
-    }
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
 }
-
 .fade-in {
-    animation: fadeIn 1.5s ease-in;
+  animation: fadeIn 1.5s ease-in;
 }

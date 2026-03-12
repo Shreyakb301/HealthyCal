@@ -3,6 +3,7 @@ import Meal from '../models/Meal.js';
 import { authenticate } from '../middleware/auth.js';
 
 const router = express.Router();
+const NUTRIENT_KEYS = ['carbs', 'protein', 'fat', 'fiber', 'sugar', 'sodium', 'cholesterol', 'saturatedFat'];
 
 // All meal routes require authentication
 router.use(authenticate);
@@ -26,17 +27,12 @@ const normalizeMealPayload = (body, existingMeal = null) => {
         calories: body.calories !== undefined ? toNumber(body.calories) : toNumber(existingMeal?.calories),
         imageUrl: (body.imageUrl ?? existingMeal?.imageUrl ?? '').trim(),
         date: body.date ? new Date(body.date) : (existingMeal?.date ?? new Date()),
-        macros: {
-            carbs: body?.macros?.carbs !== undefined
-                ? toNumber(body.macros.carbs)
-                : toNumber(existingMeal?.macros?.carbs),
-            protein: body?.macros?.protein !== undefined
-                ? toNumber(body.macros.protein)
-                : toNumber(existingMeal?.macros?.protein),
-            fat: body?.macros?.fat !== undefined
-                ? toNumber(body.macros.fat)
-                : toNumber(existingMeal?.macros?.fat)
-        }
+        macros: NUTRIENT_KEYS.reduce((acc, key) => {
+            acc[key] = body?.macros?.[key] !== undefined
+                ? toNumber(body.macros[key])
+                : toNumber(existingMeal?.macros?.[key]);
+            return acc;
+        }, {})
     };
 
     return payload;

@@ -3,7 +3,12 @@ import Login from './Login';
 import Register from './Register';
 import './Login.css';
 
-const DemoEnvelope = () => {
+const DEMO_CREDENTIALS = {
+    email: 'shreya@healthycal.com',
+    password: 'HealthyCal2026'
+};
+
+const DemoEnvelope = ({ credentials, onUseCredentials }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
@@ -16,12 +21,23 @@ const DemoEnvelope = () => {
                 <h3>Test Credentials</h3>
                 <div className="credential">
                     <span>Email:</span>
-                    <code>shreya@healthycal.com</code>
+                    <code>{credentials.email}</code>
                 </div>
                 <div className="credential">
                     <span>Password:</span>
-                    <code>HealthyCal2026</code>
+                    <code>{credentials.password}</code>
                 </div>
+                <button
+                    type="button"
+                    className="demo-envelope-action"
+                    onClick={(event) => {
+                        event.stopPropagation();
+                        onUseCredentials();
+                        setIsOpen(false);
+                    }}
+                >
+                    Use This!
+                </button>
                 <p className="hint">Click to close</p>
             </div>
         </div>
@@ -30,12 +46,25 @@ const DemoEnvelope = () => {
 
 const Auth = () => {
     const [isLogin, setIsLogin] = useState(true);
+    const [demoFillNonce, setDemoFillNonce] = useState(0);
+
+    const handleUseDemoCredentials = () => {
+        setIsLogin(true);
+        setDemoFillNonce((current) => current + 1);
+    };
 
     return (
         <div className="auth-container">
-            <DemoEnvelope />
+            <DemoEnvelope
+                credentials={DEMO_CREDENTIALS}
+                onUseCredentials={handleUseDemoCredentials}
+            />
             {isLogin ? (
-                <Login onToggle={() => setIsLogin(false)} />
+                <Login
+                    demoCredentials={DEMO_CREDENTIALS}
+                    demoFillNonce={demoFillNonce}
+                    onToggle={() => setIsLogin(false)}
+                />
             ) : (
                 <Register onToggle={() => setIsLogin(true)} />
             )}

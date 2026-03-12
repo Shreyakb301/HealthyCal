@@ -101,4 +101,3 @@ const Register = ({ onToggle }) => {
 };
 
 export default Register;
-

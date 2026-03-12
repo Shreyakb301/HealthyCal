@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { nutritionAPI } from '../services/api';
 import './NutritionSearch.css';
 
 const NutritionSearch = () => {
@@ -19,40 +20,22 @@ const NutritionSearch = () => {
         setNutritionResult('');
         localStorage.setItem('lastSearch', food);
 
-        const url = `https://chomp.p.rapidapi.com/product-search.php?query=${encodeURIComponent(food)}`;
-
         try {
-            const response = await fetch(url, {
-                method: 'GET',
-                headers: {
-                    'x-rapidapi-key': '8f33dda4aemsh7011d0520c4f007p115f1bjsn4a18df6bc3a5',
-                    'x-rapidapi-host': 'chomp-food-nutrition-database.p.rapidapi.com'
-                }
-            });
-
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
-            }
-
-            const data = await response.json();
+            const data = await nutritionAPI.search(food);
+            const results = Array.isArray(data.results) ? data.results : [];
             
-            // Handle different response formats
-            if (!data || (Array.isArray(data) && data.length === 0)) {
+            if (results.length === 0) {
                 setNutritionResult('No data found for that food. Try a different search term.');
                 return;
             }
 
-            // Handle array response
-            const item = Array.isArray(data) ? data[0] : data;
-            
-            // Extract nutrition information
-            const name = item.name || item.product_name || 'Unknown';
-            const calories = item.calories || item.energy || item.energy_kcal || 'N/A';
-            const servingSize = item.serving_size_g || item.weight || 'N/A';
-            const servingUnit = item.serving_unit || 'g';
+            const item = results[0];
+            const name = item.name || 'Unknown';
+            const calories = item.calories ?? 'N/A';
+            const serving = item.serving || 'Serving size unavailable';
 
             setNutritionResult(
-                `${name.toUpperCase()} - ${calories} calories per ${servingSize}${servingUnit}`
+                `${name} - ${calories} calories per ${serving}`
             );
         } catch (err) {
             setError(`Error fetching data: ${err.message}. Please try again.`);

@@ -1,58 +1,53 @@
 header {
-    background: var(--primary-color);
-    color: white;
-    padding: 1rem;
+  background: var(--primary-color);
+  color: white;
+  padding: 1rem;
 }
-
 header nav {
-    margin-top: 0.5rem;
-    display: flex;
-    gap: 1rem;
-    align-items: center;
-    flex-wrap: wrap;
+  margin-top: 0.5rem;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  flex-wrap: wrap;
 }
-
 header nav a {
-    color: white;
-    text-decoration: none;
-    transition: opacity 0.2s;
+  color: white;
+  text-decoration: none;
+  transition: opacity 0.2s;
 }
-
 header nav a:hover {
-    opacity: 0.8;
-    text-decoration: underline;
+  opacity: 0.8;
+  text-decoration: underline;
 }
-
 header nav button {
-    background: rgba(255, 255, 255, 0.2);
-    color: white;
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    padding: 0.5rem 1rem;
-    border-radius: 4px;
-    cursor: pointer;
-    font-size: 0.9rem;
-    transition: background 0.2s;
+  background: rgba(255, 255, 255, 0.2);
+  color: white;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 0.5rem 1rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background 0.2s ease;
 }
-
 header nav button:hover {
-    background: rgba(255, 255, 255, 0.3);
+  background: rgba(255, 255, 255, 0.3);
+}
+header nav button {
+  font-size: 0.9rem;
+}
+header h1 {
+  font-family: "Trebuchet MS", sans-serif;
+  margin: 0;
 }
 
 .user-info {
-    color: rgba(255, 255, 255, 0.9);
-    font-weight: 500;
-    margin-left: auto;
+  color: rgba(255, 255, 255, 0.9);
+  font-weight: 500;
+  margin-left: auto;
 }
 
 .logout-btn {
-    background: rgba(244, 67, 54, 0.8);
+  background: rgba(244, 67, 54, 0.8) !important;
 }
-
 .logout-btn:hover {
-    background: rgba(244, 67, 54, 1);
-}
-
-h1 {
-    font-family: 'Trebuchet MS', sans-serif;
-    margin: 0;
+  background: rgb(244, 67, 54) !important;
 }

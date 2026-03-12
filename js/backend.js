@@ -34,31 +34,28 @@ document.addEventListener("DOMContentLoaded", () => {
             }
 
             localStorage.setItem("lastSearch", food); // save last search
-            const url = `https://chomp.p.rapidapi.com/product-search.php?query=${encodeURIComponent(food)}`;
+            const url = `/api/nutrition/search?q=${encodeURIComponent(food)}`;
 
             try {
-                const response = await fetch(url, {
-                    method: 'GET',
-                    headers: {
-                        'x-rapidapi-key': '8f33dda4aemsh7011d0520c4f007p115f1bjsn4a18df6bc3a5',
-                        'x-rapidapi-host': 'chomp-food-nutrition-database.p.rapidapi.com'
-                    }
-                });
+                const response = await fetch(url, { method: 'GET' });
+                const data = await response.json().catch(() => ({}));
 
-                if (!response.ok) throw new Error("Failed to fetch data");
+                if (!response.ok) {
+                    throw new Error(data.message || "Failed to fetch data");
+                }
 
-                const data = await response.json();
-                if (data.length === 0) {
+                const results = Array.isArray(data.results) ? data.results : [];
+                if (results.length === 0) {
                     resultDiv.textContent = "No data found for that food.";
                     return;
                 }
 
-                const item = data[0];
+                const item = results[0];
                 resultDiv.innerHTML = `
-                    <p><strong>${item.name.toUpperCase()}</strong> - ${item.calories} calories per ${item.serving_size_g}g</p>
+                    <p><strong>${item.name}</strong> - ${item.calories} calories per ${item.serving}</p>
                 `;
             } catch (error) {
-                resultDiv.textContent = "Error fetching data. Try again.";
+                resultDiv.textContent = error.message || "Error fetching data. Try again.";
                 console.error(error);
             }
         });

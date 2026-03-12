@@ -1,16 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '../context/AuthContext';
 import { useMeals } from '../context/MealContext';
 import './Login.css';
 
-const Login = ({ onToggle }) => {
+const Login = ({ demoCredentials, demoFillNonce, onToggle }) => {
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [error, setError] = useState('');
     const { login } = useAuth();
     const { loadMeals } = useMeals();
     const navigate = useNavigate();
+
+    useEffect(() => {
+        if (!demoFillNonce) {
+            return;
+        }
+
+        setEmail(demoCredentials.email);
+        setPassword(demoCredentials.password);
+        setError('');
+    }, [demoCredentials, demoFillNonce]);
 
     const handleSubmit = async (e) => {
         e.preventDefault();
@@ -69,4 +79,3 @@ const Login = ({ onToggle }) => {
 };
 
 export default Login;
-

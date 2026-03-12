@@ -1,8 +1,10 @@
 class FoodItem {
-    constructor(name, calories, serving_size_g) {
+    constructor(id, name, calories, serving, macros) {
+        this.id = id;
         this.name = name;
         this.calories = calories;
-        this.serving_size_g = serving_size_g;
+        this.serving = serving;
+        this.macros = macros;
     }
 }
 
@@ -31,72 +33,50 @@ document.getElementById("fetchApiBtn").addEventListener("click", async () => {
 
     lastRequestTime = now;
 
-    const url = `https://dietagram.p.rapidapi.com/apiFood.php?name=${encodeURIComponent(query)}&lang=en`;
+    const url = `/api/nutrition/search?q=${encodeURIComponent(query)}`;
 
     try {
-        const response = await fetch(url, {
-            method: 'GET',
-            headers: {
-                'x-rapidapi-key': '4WY3HV7ft4134gdDqfjoagvwDzd6FckjWZeidqJU',
-                'x-rapidapi-host': 'dietagram.p.rapidapi.com'
-            }
-        });
+        const response = await fetch(url, { method: 'GET' });
 
         if (!response.ok) {
-            throw new Error(`HTTP error! Status: ${response.status}`);
+            const errorBody = await response.json().catch(() => ({}));
+            throw new Error(errorBody.message || `HTTP error! Status: ${response.status}`);
         }
 
-        const result = await response.text();
-        console.log(result); // Debug: see what the API returns
+        const payload = await response.json();
+        const results = Array.isArray(payload.results) ? payload.results : [];
 
-        try {
-            const data = JSON.parse(result);
+        if (results.length === 0) {
+            resultDiv.textContent = "No results found.";
+            return;
+        }
 
-            if (Array.isArray(data) && data.length === 0) {
-                resultDiv.textContent = "No results found.";
-                return;
-            }
+        results.forEach(item => {
+            const food = new FoodItem(
+                item.id,
+                item.name || 'Unknown',
+                item.calories || 0,
+                item.serving || 'Serving size unavailable',
+                item.macros || { carbs: 0, protein: 0, fat: 0 }
+            );
 
-            // Handle array of items
-            if (Array.isArray(data)) {
-                data.forEach(item => {
-                    const food = new FoodItem(item.name || item.product_name || 'Unknown',
-                        item.calories || item.energy || 0,
-                        item.serving_size_g || item.weight || 100);
-                    foodItems.push(food);
-
-                    const div = document.createElement("div");
-                    div.classList.add("food-item");
-                    div.innerHTML = `
-                        <h3>${food.name}</h3>
-                        <p><strong>Calories:</strong> ${food.calories}</p>
-                        <p><strong>Serving Size:</strong> ${food.serving_size_g} g</p>
-                    `;
-                    resultDiv.appendChild(div);
-                });
-            } else {
-                const food = new FoodItem(data.name || data.product_name || 'Unknown',
-                    data.calories || data.energy || 0,
-                    data.serving_size_g || data.weight || 100);
+            if (!searchFood(food.name)) {
                 foodItems.push(food);
-
-                const div = document.createElement("div");
-                div.classList.add("food-item");
-                div.innerHTML = `
-                    <h3>${food.name}</h3>
-                    <p><strong>Calories:</strong> ${food.calories}</p>
-                    <p><strong>Serving Size:</strong> ${food.serving_size_g} g</p>
-                `;
-                resultDiv.appendChild(div);
             }
-        } catch (parseError) {
-            // If not JSON, display raw text
-            resultDiv.innerHTML = `<div style="color: blue;">API Response: ${result}</div>`;
-        }
 
+            const div = document.createElement("div");
+            div.classList.add("food-item");
+            div.innerHTML = `
+                <h3>${food.name}</h3>
+                <p><strong>Calories:</strong> ${food.calories}</p>
+                <p><strong>Serving:</strong> ${food.serving}</p>
+                <p><strong>Macros:</strong> ${food.macros.carbs}g carbs / ${food.macros.protein}g protein / ${food.macros.fat}g fat</p>
+            `;
+            resultDiv.appendChild(div);
+        });
     } catch (error) {
         console.error("Error fetching data:", error);
-        resultDiv.textContent = "Error fetching data. Please try again.";
+        resultDiv.textContent = error.message || "Error fetching data. Please try again.";
     }
 });
 
