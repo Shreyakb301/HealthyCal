@@ -100,6 +100,7 @@ const Home = () => {
                                 >
                                     <div className="ring-center-v2">
                                         <div className="percentage">{Math.round(calorieProgress)}%</div>
+                                        <div className="of-goal">of goal</div>
                                     </div>
                                 </div>
                             </div>
@@ -132,6 +133,10 @@ const Home = () => {
                             >
                                 <div className="ring-center-v2">
                                     <div className="percentage">{Math.round(calorieProgress)}%</div>
+                                    <div className="of-goal">of goal</div>
+                                    <div className="ring-label-lg">
+                                        {calories.totalCaloriesConsumed.toLocaleString()} / {calories.dailyCalorieGoal.toLocaleString()} kcal
+                                    </div>
                                 </div>
                             </div>
                         </div>
