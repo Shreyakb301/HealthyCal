@@ -10,6 +10,7 @@
     "server": "node server/index.js",
     "dev:server": "nodemon server/index.js",
     "dev:all": "concurrently \"npm run dev:server\" \"npm run dev\"",
+    "seed:meal-logs": "node server/scripts/seedMealLogs.js",
     "start": "npm run dev:all",
     "test:unit": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest",
     "test:e2e": "cypress run",

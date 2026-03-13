@@ -561,6 +561,49 @@
   box-shadow: var(--shadow-sm);
 }
 
+.nutrition-search-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+}
+
+.nutrition-search-result {
+  width: 100%;
+  text-align: left;
+  transform: none;
+}
+
+.nutrition-search-result:hover {
+  transform: none;
+}
+
+.nutrition-search-item .food-actions {
+  gap: 0.9rem;
+}
+
+.nutrition-search-toggle {
+  width: 28px;
+  height: 28px;
+  border-radius: 999px;
+  background: #eef3f0;
+  color: var(--primary);
+  display: inline-grid;
+  place-items: center;
+  font-size: 0.78rem;
+  font-weight: 700;
+  flex-shrink: 0;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.nutrition-search-item.active .nutrition-search-toggle {
+  transform: rotate(180deg);
+  background: #e3eee7;
+}
+
+.nutrition-search-detail-card {
+  margin-top: 0;
+}
+
 .search-result-row {
   width: 100%;
   padding: 1rem;
@@ -1416,6 +1459,58 @@
   align-items: start;
 }
 
+.customized-input-card,
+.customized-food-list-card {
+  padding: 1.8rem;
+}
+
+.customized-input-card h2,
+.customized-food-list-card h2 {
+  margin-bottom: 1.15rem;
+  font-size: 1.28rem;
+}
+
+.customized-input-card .card-scroll-area,
+.customized-food-list-card .card-scroll-area {
+  gap: 0.85rem;
+}
+
+.customized-input-card .feature-form input {
+  min-height: 48px;
+  padding: 0.72rem 0.9rem;
+  font-size: 0.92rem;
+}
+
+.customized-input-card .feature-form input::placeholder {
+  font-size: 0.91rem;
+}
+
+.customized-input-card .search-row,
+.customized-input-card .triple-grid {
+  gap: 0.65rem;
+}
+
+.customized-action-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+  gap: 0.65rem;
+}
+
+.customized-action-row > button {
+  min-height: 46px;
+  font-size: 0.9rem;
+  padding: 0.72rem 0.95rem;
+}
+
+.customized-food-list-card .inline-empty-note {
+  max-width: 500px;
+  min-height: 132px;
+  margin: 0 auto;
+  padding: 1rem 1.2rem;
+  font-size: 0.95rem;
+  line-height: 1.45;
+}
+
 .custom-meal-status {
   padding: 0.8rem 1rem;
   border-radius: 12px;
@@ -1730,6 +1825,36 @@
     font-size: 1.3rem;
   }
 
+  .meal-form-meta-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customized-input-card .search-row,
+  .customized-input-card .triple-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .customized-action-row {
+    grid-template-columns: 1fr;
+  }
+
+  .customized-input-card .nutrient-input-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .customized-input-card input::placeholder {
+    font-size: 0.92rem;
+  }
+
+  .add-meal-card .feature-form input,
+  .add-meal-card .feature-form select {
+    font-size: 0.94rem;
+  }
+
+  .add-meal-card .feature-form input::placeholder {
+    font-size: 0.92rem;
+  }
+
   .search-main-card .search-input-container input {
     font-size: 0.95rem;
   }
@@ -1788,7 +1913,6 @@
     justify-content: center;
   }
 
-  .meal-form-meta-grid,
   .main-macro-grid {
     grid-template-columns: 1fr;
   }

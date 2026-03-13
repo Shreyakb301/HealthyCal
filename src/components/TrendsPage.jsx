@@ -3,6 +3,44 @@ import AppShell from './AppShell';
 import { dashboardAPI } from '../services/api';
 import './FeaturePages.css';
 
+const getMacroSegments = (macros = {}) => {
+    const carbs = Number(macros.carbs) || 0;
+    const protein = Number(macros.protein) || 0;
+    const fat = Number(macros.fat) || 0;
+    const total = carbs + protein + fat;
+    const safeTotal = total || 1;
+
+    return [
+        {
+            key: 'carbs',
+            label: 'Carbs',
+            width: (carbs / safeTotal) * 100,
+            percentage: Math.round((carbs / safeTotal) * 100)
+        },
+        {
+            key: 'protein',
+            label: 'Protein',
+            width: (protein / safeTotal) * 100,
+            percentage: Math.round((protein / safeTotal) * 100)
+        },
+        {
+            key: 'fat',
+            label: 'Fat',
+            width: (fat / safeTotal) * 100,
+            percentage: Math.round((fat / safeTotal) * 100)
+        }
+    ];
+};
+
+const getMondayFirstIndex = (dateString) => {
+    if (!dateString) {
+        return 0;
+    }
+
+    const date = new Date(`${dateString}T12:00:00`);
+    return (date.getDay() + 6) % 7;
+};
+
 const TrendsPage = () => {
     const [weeklyData, setWeeklyData] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -23,6 +61,9 @@ const TrendsPage = () => {
     }, []);
 
     const maxCalories = Math.max(...weeklyData.map(d => d.calories), 2000);
+    const mondayFirstWeeklyData = [...weeklyData].sort(
+        (left, right) => getMondayFirstIndex(left.date) - getMondayFirstIndex(right.date)
+    );
 
     return (
         <AppShell title="Trends" subtitle="Your weekly nutrition activity">
@@ -61,26 +102,31 @@ const TrendsPage = () => {
                     <article className="feature-card">
                         <h2>Weekly Macros Summary</h2>
                         <div className="macros-weekly-list">
-                            {weeklyData.map(day => (
+                            {mondayFirstWeeklyData.map(day => {
+                                const macroSegments = getMacroSegments(day.macros);
+
+                                return (
                                 <div key={day.date} className="macro-day-row">
                                     <span className="day-name">{day.label}</span>
                                     <div className="macro-bar-mini">
-                                        <div
-                                            className="segment carbs"
-                                            style={{ width: `${(day.macros.carbs / (day.macros.carbs + day.macros.protein + day.macros.fat || 1)) * 100}%` }}
-                                        />
-                                        <div
-                                            className="segment protein"
-                                            style={{ width: `${(day.macros.protein / (day.macros.carbs + day.macros.protein + day.macros.fat || 1)) * 100}%` }}
-                                        />
-                                        <div
-                                            className="segment fat"
-                                            style={{ width: `${(day.macros.fat / (day.macros.carbs + day.macros.protein + day.macros.fat || 1)) * 100}%` }}
-                                        />
+                                        {macroSegments.map(segment => (
+                                            <button
+                                                key={`${day.date}-${segment.key}`}
+                                                type="button"
+                                                className={`segment ${segment.key}`}
+                                                style={{ width: `${segment.width}%` }}
+                                                aria-label={`${segment.label} ${segment.percentage}%`}
+                                            >
+                                                <span className="segment-tooltip">
+                                                    {segment.label} {segment.percentage}%
+                                                </span>
+                                            </button>
+                                        ))}
                                     </div>
                                     <span className="day-total-cals">{day.calories} cal</span>
                                 </div>
-                            ))}
+                                );
+                            })}
                         </div>
                     </article>
 
@@ -132,7 +178,7 @@ const TrendsPage = () => {
                     height: 100%;
                     display: flex;
                     align-items: flex-end;
-                    overflow: hidden;
+                    overflow: visible;
                     position: relative;
                 }
                 .bar-inner {
@@ -140,6 +186,7 @@ const TrendsPage = () => {
                     border-radius: 8px 8px 0 0;
                     transition: height 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275);
                     position: relative;
+                    z-index: 1;
                 }
                 .bar-inner:hover .bar-tooltip {
                     opacity: 1;
@@ -160,7 +207,7 @@ const TrendsPage = () => {
                     pointer-events: none;
                     transition: all 0.2s;
                     white-space: nowrap;
-                    z-index: 10;
+                    z-index: 3;
                 }
                 .bar-label {
                     margin-top: 0.75rem;
@@ -186,12 +233,47 @@ const TrendsPage = () => {
                     background: var(--bg);
                     border-radius: 10px;
                     display: flex;
-                    overflow: hidden;
+                    overflow: visible;
+                    position: relative;
                 }
-                .segment { height: 100%; }
+                .segment {
+                    height: 100%;
+                    border: none;
+                    padding: 0;
+                    margin: 0;
+                    position: relative;
+                    cursor: default;
+                    min-width: 8px;
+                }
+                .segment:first-child { border-radius: 10px 0 0 10px; }
+                .segment:last-child { border-radius: 0 10px 10px 0; }
                 .segment.carbs { background: #56ae6d; }
                 .segment.protein { background: #f09252; }
                 .segment.fat { background: #e75a5a; }
+                .segment:hover .segment-tooltip,
+                .segment:focus-visible .segment-tooltip {
+                    opacity: 1;
+                    transform: translateX(-50%) translateY(-8px);
+                    z-index: 6;
+                }
+                .segment-tooltip {
+                    position: absolute;
+                    left: 50%;
+                    bottom: calc(100% + 10px);
+                    transform: translateX(-50%) translateY(0);
+                    background: #fff;
+                    color: var(--text-muted);
+                    border-radius: 8px;
+                    box-shadow: 0 10px 26px rgba(26, 43, 31, 0.12);
+                    padding: 0.45rem 0.65rem;
+                    font-size: 0.78rem;
+                    font-weight: 700;
+                    white-space: nowrap;
+                    opacity: 0;
+                    pointer-events: none;
+                    transition: opacity 0.18s ease, transform 0.18s ease;
+                    z-index: 5;
+                }
                 .day-total-cals {
                     font-size: 0.85rem;
                     font-weight: 700;

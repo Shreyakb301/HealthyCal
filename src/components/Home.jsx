@@ -13,6 +13,8 @@ const mealOrder = [
 const fallbackImg =
     'https://images.unsplash.com/photo-1498837167922-ddd27525d352?auto=format&fit=crop&w=640&q=80';
 
+const formatOneDecimal = (value) => (Number(value) || 0).toFixed(1);
+
 const Home = () => {
     const [dashboard, setDashboard] = useState(null);
     const [loading, setLoading] = useState(false);
@@ -79,15 +81,15 @@ const Home = () => {
                                 <div className="macros-grid">
                                     <div className="macro-item">
                                         <div className="macro-label"><span className="dot carbs" /> Carbs</div>
-                                        <div className="macro-value">{dashboard?.macronutrientSummary?.totals?.carbs || 0}g</div>
+                                        <div className="macro-value">{formatOneDecimal(dashboard?.macronutrientSummary?.totals?.carbs)}g</div>
                                     </div>
                                     <div className="macro-item">
                                         <div className="macro-label"><span className="dot protein" /> Protein</div>
-                                        <div className="macro-value">{dashboard?.macronutrientSummary?.totals?.protein || 0}g</div>
+                                        <div className="macro-value">{formatOneDecimal(dashboard?.macronutrientSummary?.totals?.protein)}g</div>
                                     </div>
                                     <div className="macro-item">
                                         <div className="macro-label"><span className="dot fat" /> Fat</div>
-                                        <div className="macro-value">{dashboard?.macronutrientSummary?.totals?.fat || 0}g</div>
+                                        <div className="macro-value">{formatOneDecimal(dashboard?.macronutrientSummary?.totals?.fat)}g</div>
                                     </div>
                                 </div>
                             </div>
@@ -98,7 +100,6 @@ const Home = () => {
                                 >
                                     <div className="ring-center-v2">
                                         <div className="percentage">{Math.round(calorieProgress)}%</div>
-                                        <div className="of-goal">of goal</div>
                                     </div>
                                 </div>
                             </div>
@@ -130,7 +131,7 @@ const Home = () => {
                                 style={{ '--progress': `${calorieProgress}%` }}
                             >
                                 <div className="ring-center-v2">
-                                    <div className="ring-label-lg">{calories.totalCaloriesConsumed} / {calories.dailyCalorieGoal}</div>
+                                    <div className="percentage">{Math.round(calorieProgress)}%</div>
                                 </div>
                             </div>
                         </div>

@@ -25,9 +25,6 @@ const formatMetric = (value) => {
     return Number.isInteger(rounded) ? String(rounded) : rounded.toFixed(1);
 };
 
-const formatSearchMacroSummary = (food) =>
-    `${formatMetric(food?.macros?.carbs)} / ${formatMetric(food?.macros?.protein)} / ${formatMetric(food?.macros?.fat)} g`;
-
 const formatNutrientValue = (value, unit) => `${formatMetric(value)}${unit}`;
 
 const NutritionPage = () => {
@@ -78,8 +75,6 @@ const NutritionPage = () => {
         const percentages = summary?.macronutrientSummary?.percentages || { carbs: 0, protein: 0, fat: 0 };
         return `Carbs ${percentages.carbs}% | Protein ${percentages.protein}% | Fat ${percentages.fat}%`;
     }, [summary]);
-
-    const selectedFood = results.find((food) => food.id === selectedFoodId) || null;
 
     return (
         <AppShell title="Nutrition" subtitle="Search and explore food nutrition data">
@@ -140,60 +135,75 @@ const NutritionPage = () => {
                         <div className="search-results-shell">
                             <div className="search-results-list">
                                 {results.map((food) => {
-                                    const isSelected = selectedFood?.id === food.id;
+                                    const isSelected = selectedFoodId === food.id;
 
                                     return (
-                                        <button
+                                        <div
                                             key={food.id}
-                                            type="button"
-                                            className={`search-result-item search-result-select nutrition-search-result ${isSelected ? 'active' : ''}`}
-                                            onClick={() =>
-                                                setSelectedFoodId((current) => (current === food.id ? null : food.id))
-                                            }
-                                            aria-pressed={isSelected}
+                                            className={`nutrition-search-item ${isSelected ? 'active' : ''}`}
                                         >
-                                            <div className="food-details">
-                                                <span className="food-name">{food.name}</span>
-                                                <small className="food-serv">
-                                                    {food.serving || 'Serving unavailable'}
-                                                </small>
-                                            </div>
+                                            <button
+                                                type="button"
+                                                className={`search-result-item search-result-select nutrition-search-result ${isSelected ? 'active' : ''}`}
+                                                onClick={() =>
+                                                    setSelectedFoodId((current) => (current === food.id ? null : food.id))
+                                                }
+                                                aria-pressed={isSelected}
+                                            >
+                                                <div className="food-details">
+                                                    <span className="food-name">{food.name}</span>
+                                                    <small className="food-serv">
+                                                        {food.serving || 'Serving unavailable'}
+                                                    </small>
+                                                </div>
 
-                                            <div className="food-actions">
-                                                <span className="food-cals-bold">
-                                                    {formatMetric(food.calories)} kcal
-                                                </span>
-                                            </div>
-                                        </button>
+                                                <div className="food-actions">
+                                                    <span className="food-cals-bold">
+                                                        {formatMetric(food.calories)} kcal
+                                                    </span>
+                                                    <span
+                                                        className="nutrition-search-toggle"
+                                                        aria-hidden="true"
+                                                    >
+                                                        ▼
+                                                    </span>
+                                                </div>
+                                            </button>
+
+                                            {isSelected && (
+                                                <div className="custom-food-detail search-result-detail-card nutrition-search-detail-card">
+                                                    <div className="search-result-detail-header">
+                                                        <div>
+                                                            <h3>{food.name}</h3>
+                                                            <p>{food.serving || 'Serving unavailable'}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div className="custom-food-detail-grid">
+                                                        <div>
+                                                            <span>Calories</span>
+                                                            <strong>{formatMetric(food.calories)} kcal</strong>
+                                                        </div>
+                                                        {NUTRITION_FIELDS.map((nutrient) => (
+                                                            <div key={nutrient.key}>
+                                                                <span>{nutrient.label}</span>
+                                                                <strong>
+                                                                    {formatNutrientValue(
+                                                                        food.macros?.[nutrient.key],
+                                                                        nutrient.unit
+                                                                    )}
+                                                                </strong>
+                                                            </div>
+                                                        ))}
+                                                    </div>
+                                                </div>
+                                            )}
+                                        </div>
                                     );
                                 })}
                             </div>
 
-                            {selectedFood ? (
-                                <div className="custom-food-detail search-result-detail-card">
-                                    <div className="search-result-detail-header">
-                                        <div>
-                                            <h3>{selectedFood.name}</h3>
-                                            <p>{selectedFood.serving || 'Serving unavailable'}</p>
-                                        </div>
-                                    </div>
-
-                                    <div className="custom-food-detail-grid">
-                                        <div>
-                                            <span>Calories</span>
-                                            <strong>{formatMetric(selectedFood.calories)} kcal</strong>
-                                        </div>
-                                        {NUTRITION_FIELDS.map((nutrient) => (
-                                            <div key={nutrient.key}>
-                                                <span>{nutrient.label}</span>
-                                                <strong>
-                                                    {formatNutrientValue(selectedFood.macros?.[nutrient.key], nutrient.unit)}
-                                                </strong>
-                                            </div>
-                                        ))}
-                                    </div>
-                                </div>
-                            ) : (
+                            {selectedFoodId ? null : (
                                 <div className="search-selection-note">
                                     Click a food result to view the full nutrition values.
                                 </div>

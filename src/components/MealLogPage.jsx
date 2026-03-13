@@ -108,7 +108,7 @@ const EXTRA_NUTRIENTS = [
     }
 ];
 const MAIN_MACRO_FIELDS = [
-    { key: 'calories', label: 'Calories', placeholder: 'Enter calories' },
+    { key: 'calories', label: 'Calories', placeholder: '0' },
     { key: 'protein', label: 'Protein', placeholder: 'g' },
     { key: 'carbs', label: 'Carbs', placeholder: 'g' },
     { key: 'fat', label: 'Fat', placeholder: 'g' }
@@ -848,7 +848,7 @@ const MealLogPage = () => {
                                                 <span>Quantity / Serving</span>
                                                 <input
                                                     name="amount"
-                                                    placeholder="Quantity / serving"
+                                                    placeholder="1 serving"
                                                     value={formData.amount}
                                                     onChange={handleChange}
                                                 />
@@ -1302,7 +1302,7 @@ const MealLogPage = () => {
                                         <div className="search-row">
                                             <input
                                                 name="amount"
-                                                placeholder="Quantity / serving"
+                                                placeholder="1 serving"
                                                 value={customInput.amount}
                                                 onChange={handleCustomInputChange}
                                             />
@@ -1311,7 +1311,7 @@ const MealLogPage = () => {
                                                 type="number"
                                                 min="0"
                                                 step="0.1"
-                                                placeholder="Calories"
+                                                placeholder="0"
                                                 value={customInput.calories}
                                                 onChange={handleCustomInputChange}
                                             />
@@ -1325,7 +1325,7 @@ const MealLogPage = () => {
                                                     type="number"
                                                     min="0"
                                                     step="0.1"
-                                                    placeholder={nutrient.placeholder}
+                                                    placeholder={nutrient.shortLabel}
                                                     value={customInput[nutrient.key]}
                                                     onChange={handleCustomInputChange}
                                                 />
@@ -1340,7 +1340,7 @@ const MealLogPage = () => {
                                                     type="number"
                                                     min="0"
                                                     step="0.1"
-                                                    placeholder={nutrient.placeholder}
+                                                    placeholder={nutrient.shortLabel}
                                                     value={customInput[nutrient.key]}
                                                     onChange={handleCustomInputChange}
                                                 />

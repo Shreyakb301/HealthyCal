@@ -361,10 +361,31 @@
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
 }
 
+.ring-center-v2 {
+  position: relative;
+  z-index: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 0.15rem;
+  text-align: center;
+  padding: 0 1rem;
+}
+
 .ring-center-v2 .percentage {
   font-size: 2rem;
   font-weight: 800;
   color: var(--primary);
+  line-height: 1;
+}
+
+.ring-center-v2 .of-goal {
+  font-size: 0.78rem;
+  font-weight: 700;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
 }
 
 .card-header {
@@ -549,9 +570,11 @@
 }
 
 .ring-label-lg {
-  font-size: 1.25rem;
+  font-size: 0.78rem;
   font-weight: 700;
-  color: var(--primary);
+  color: var(--text-muted);
+  line-height: 1.35;
+  max-width: 110px;
 }
 
 .macro-card-flex-content {
