@@ -64,6 +64,25 @@ const formatMeal = (meal, mealType) => ({
     }
 });
 
+const formatMealLog = (meal) => ({
+    id: String(meal._id),
+    mealType: meal.mealType || 'snack',
+    name: meal.name || meal.food,
+    calories: toNumber(meal.calories),
+    amount: meal.amount || '',
+    date: meal.date ? new Date(meal.date).toISOString() : null,
+    macros: {
+        carbs: toNumber(meal?.macros?.carbs),
+        protein: toNumber(meal?.macros?.protein),
+        fat: toNumber(meal?.macros?.fat),
+        fiber: toNumber(meal?.macros?.fiber),
+        sugar: toNumber(meal?.macros?.sugar),
+        sodium: toNumber(meal?.macros?.sodium),
+        cholesterol: toNumber(meal?.macros?.cholesterol),
+        saturatedFat: toNumber(meal?.macros?.saturatedFat)
+    }
+});
+
 const percentage = (value, total) => {
     if (!total) return 0;
     return Math.round((value / total) * 100);
@@ -120,6 +139,7 @@ router.get('/', async (req, res) => {
         res.json({
             date: start.toISOString().slice(0, 10),
             dailyMeals,
+            todayMealLogs: mealsToday.map(formatMealLog),
             dailyCalorieSummary: {
                 totalCaloriesConsumed: caloriesConsumed,
                 dailyCalorieGoal: calorieGoal
