@@ -105,6 +105,20 @@ MEAL_LOG_PASSWORD=your-password \
 npm run push:daily-meals -- --dry-run
 ```
 
+4. For future dates, set `MEAL_LOG_DATE` and `MEAL_LOG_DAYS` (simple, safe and repeatable):
+
+```bash
+MEAL_LOG_BASE_URL=https://your-site.example.com \
+MEAL_LOG_EMAIL=you@example.com \
+MEAL_LOG_PASSWORD=your-password \
+MEAL_LOG_DATE=2026-03-16 \
+MEAL_LOG_DAYS=7 \
+npm run push:daily-meals
+```
+
+This writes meal entries for every date in the range, choosing day-specific meals, date overrides, or default menu.
+
+
 4. Push the meals for today, or backfill a specific date:
 
 ```bash

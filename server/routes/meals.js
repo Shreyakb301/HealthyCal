@@ -44,8 +44,8 @@ router.get('/', async (req, res) => {
         const query = { userId: req.user._id };
 
         if (req.query.date) {
-            // Parse and create start/end of the requested local day
-            const day = new Date(req.query.date);
+            // Interpret ?date=YYYY-MM-DD as local-day range (matching frontend local calendar selection)
+            const day = new Date(`${req.query.date}T00:00:00`);
             if (!isNaN(day)) {
                 const start = new Date(day);
                 start.setHours(0, 0, 0, 0);

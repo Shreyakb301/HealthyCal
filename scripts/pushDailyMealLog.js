@@ -13,6 +13,7 @@ import {
 } from './lib/mealLogAutomation.js';
 
 const DEFAULT_CONFIG_PATH = 'scripts/meal-log-plan.json';
+const DEFAULT_EXAMPLE_CONFIG_PATH = 'scripts/meal-log-plan.example.json';
 
 const parseArgs = (argv) =>
     argv.reduce((acc, arg) => {
@@ -35,9 +36,23 @@ const parseArgs = (argv) =>
         throw new Error(`Unknown argument "${arg}". Use --help for usage.`);
     }, {});
 
+const addDays = (dateString, daysToAdd) => {
+    const pieces = dateString.split('-').map(Number);
+
+    if (pieces.length !== 3 || pieces.some((n) => Number.isNaN(n))) {
+        throw new Error(`Invalid date format when adding days: ${dateString}`);
+    }
+
+    const [year, month, day] = pieces;
+    const date = new Date(year, month - 1, day);
+    date.setDate(date.getDate() + daysToAdd);
+
+    return `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, '0')}-${String(date.getDate()).padStart(2, '0')}`;
+};
+
 const printUsage = () => {
     console.log(`Usage:
-  npm run push:daily-meals -- [--date=YYYY-MM-DD] [--file=path/to/meal-log-plan.json] [--dry-run]
+  npm run push:daily-meals -- [--date=YYYY-MM-DD] [--days=N] [--file=path/to/meal-log-plan.json] [--dry-run]
 
 Required environment variables:
   MEAL_LOG_BASE_URL   Base URL for the HealthyCal site, for example https://healthycal.vercel.app
@@ -48,6 +63,7 @@ Optional environment variables:
   MEAL_LOG_FILE       Defaults to scripts/meal-log-plan.json
   MEAL_LOG_TIMEZONE   Overrides the plan timezone and system timezone
   MEAL_LOG_DATE       Overrides today's date for backfills
+  MEAL_LOG_DAYS       Number of days to push (default: 1)
   MEAL_LOG_DRY_RUN    Set to true to preview without sending API requests
 `);
 };
@@ -90,6 +106,18 @@ const login = async (baseUrl, email, password) => {
     return payload.token;
 };
 
+const registerUser = async (baseUrl, username, email, password) => {
+    const payload = await requestJson(baseUrl, '/api/auth/register', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({ username, email, password })
+    });
+
+    return payload.token;
+};
+
 const buildAuthHeaders = (token) => ({
     Authorization: `Bearer ${token}`,
     'Content-Type': 'application/json'
@@ -105,14 +133,37 @@ const main = async () => {
         return;
     }
 
-    const configPath = args.file || process.env.MEAL_LOG_FILE || DEFAULT_CONFIG_PATH;
-    const { absolutePath, config } = await loadMealPlanConfig(configPath);
+    let configPath = args.file || process.env.MEAL_LOG_FILE || DEFAULT_CONFIG_PATH;
+    let configData;
+
+    try {
+        configData = await loadMealPlanConfig(configPath);
+    } catch (error) {
+        if (
+            configPath === DEFAULT_CONFIG_PATH &&
+            error?.message?.includes('Meal plan file not found')
+        ) {
+            console.warn(`Warning: ${error.message}`);
+            console.warn(`Falling back to example plan file at ${DEFAULT_EXAMPLE_CONFIG_PATH}.`);
+            configPath = DEFAULT_EXAMPLE_CONFIG_PATH;
+            configData = await loadMealPlanConfig(configPath);
+        } else {
+            throw error;
+        }
+    }
+
+    const { absolutePath, config } = configData;
     const timeZone = process.env.MEAL_LOG_TIMEZONE || config.timezone || process.env.TZ || Intl.DateTimeFormat().resolvedOptions().timeZone;
     const targetDate = normalizeDateString(args.date || process.env.MEAL_LOG_DATE || getTodayDateString(timeZone));
-    const selectedMeals = selectMealsForDate(config, targetDate, timeZone);
-    const desiredMeals = selectedMeals.map((entry, index) => normalizeMealEntry(entry, index, targetDate, timeZone));
+    const days = Number(args.days || process.env.MEAL_LOG_DAYS || 1);
+
+    if (!Number.isInteger(days) || days < 1) {
+        throw new Error(`Invalid number of days: ${args.days || process.env.MEAL_LOG_DAYS}. Provide an integer >= 1.`);
+    }
+
+    const datesToProcess = Array.from({ length: days }, (_, i) => addDays(targetDate, i));
     const baseUrl = normalizeBaseUrl(process.env.MEAL_LOG_BASE_URL);
-    const email = String(process.env.MEAL_LOG_EMAIL || '').trim();
+    const email = String(process.env.MEAL_LOG_EMAIL || 'shreya@healthycal.com').trim();
     const password = String(process.env.MEAL_LOG_PASSWORD || '');
     const dryRun = args.dryRun || envBool(process.env.MEAL_LOG_DRY_RUN);
 
@@ -124,72 +175,112 @@ const main = async () => {
         throw new Error('MEAL_LOG_EMAIL and MEAL_LOG_PASSWORD are required.');
     }
 
-    assertUniqueMealIdentities(desiredMeals, timeZone);
-
     console.log(`Meal plan: ${absolutePath}`);
-    console.log(`Date: ${targetDate}`);
+    console.log(`Date start: ${targetDate}`);
     console.log(`Timezone: ${timeZone}`);
-    console.log(`Meals selected: ${desiredMeals.length}`);
+    console.log(`Days to push: ${days}`);
+    console.log(`Dates to push: ${datesToProcess.join(', ')}`);
 
-    const token = await login(baseUrl, email, password);
-    const existingPayload = await requestJson(baseUrl, `/api/meals?date=${targetDate}`, {
-        headers: {
-            Authorization: `Bearer ${token}`
+    let token;
+
+    try {
+        token = await login(baseUrl, email, password);
+    } catch (error) {
+        const messageText = String(error?.message || '').toLowerCase();
+
+        if (messageText.includes('invalid credentials') || messageText.includes('401')) {
+            const username = process.env.MEAL_LOG_USERNAME || email.split('@')[0];
+            console.log(`Login failed with invalid credentials, attempting register as ${username} <${email}>`);
+
+            try {
+                token = await registerUser(baseUrl, username, email, password);
+                console.log('User registered successfully, proceeding with meal push.');
+            } catch (registerError) {
+                throw new Error(`Login failed and registration also failed: ${registerError.message || registerError}`);
+            }
+        } else {
+            throw error;
         }
-    });
-    const existingMeals = existingPayload.meals || [];
-    const existingByIdentity = new Map();
-
-    existingMeals.forEach((meal) => {
-        const identity = createMealIdentity(meal, timeZone);
-
-        if (!existingByIdentity.has(identity)) {
-            existingByIdentity.set(identity, meal);
-        }
-    });
-
+    }
     const summary = {
         created: 0,
         updated: 0,
         skipped: 0
     };
 
-    for (const meal of desiredMeals) {
-        const identity = createMealIdentity(meal, timeZone);
-        const existingMeal = existingByIdentity.get(identity);
+    for (const date of datesToProcess) {
+        let selectedMeals;
 
-        if (existingMeal && !mealNeedsUpdate(existingMeal, meal, timeZone)) {
-            summary.skipped += 1;
-            console.log(`SKIP   ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime}`);
+        try {
+            selectedMeals = selectMealsForDate(config, date, timeZone);
+        } catch (error) {
+            console.warn(`Skipping ${date}: ${error.message}`);
             continue;
         }
 
-        if (dryRun) {
-            const action = existingMeal ? 'UPDATE' : 'CREATE';
-            summary[existingMeal ? 'updated' : 'created'] += 1;
-            console.log(`DRYRUN ${action.padEnd(6)} ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime}`);
+        if (!Array.isArray(selectedMeals) || selectedMeals.length === 0) {
+            console.log(`No meals configured for ${date}. Skipping.`);
             continue;
         }
 
-        if (existingMeal) {
-            await requestJson(baseUrl, `/api/meals/${existingMeal._id}`, {
-                method: 'PUT',
+        const desiredMealsForDate = selectedMeals.map((entry, index) => normalizeMealEntry(entry, index, date, timeZone));
+        assertUniqueMealIdentities(desiredMealsForDate, timeZone);
+
+        console.log(`\nProcessing ${desiredMealsForDate.length} meals for ${date}...`);
+
+        const existingPayload = await requestJson(baseUrl, `/api/meals?date=${date}`, {
+            headers: {
+                Authorization: `Bearer ${token}`
+            }
+        });
+
+        const existingMealsForDate = existingPayload.meals || [];
+        const existingByIdentity = new Map();
+
+        existingMealsForDate.forEach((meal) => {
+            const identity = createMealIdentity(meal, timeZone);
+            if (!existingByIdentity.has(identity)) {
+                existingByIdentity.set(identity, meal);
+            }
+        });
+
+        for (const meal of desiredMealsForDate) {
+            const identity = createMealIdentity(meal, timeZone);
+            const existingMeal = existingByIdentity.get(identity);
+
+            if (existingMeal && !mealNeedsUpdate(existingMeal, meal, timeZone)) {
+                summary.skipped += 1;
+                console.log(`SKIP   ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime} (${date})`);
+                continue;
+            }
+
+            if (dryRun) {
+                const action = existingMeal ? 'UPDATE' : 'CREATE';
+                summary[existingMeal ? 'updated' : 'created'] += 1;
+                console.log(`DRYRUN ${action.padEnd(6)} ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime} (${date})`);
+                continue;
+            }
+
+            if (existingMeal) {
+                await requestJson(baseUrl, `/api/meals/${existingMeal._id}`, {
+                    method: 'PUT',
+                    headers: buildAuthHeaders(token),
+                    body: JSON.stringify(meal)
+                });
+                summary.updated += 1;
+                console.log(`UPDATE ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime} (${date})`);
+                continue;
+            }
+
+            const created = await requestJson(baseUrl, '/api/meals', {
+                method: 'POST',
                 headers: buildAuthHeaders(token),
                 body: JSON.stringify(meal)
             });
-            summary.updated += 1;
-            console.log(`UPDATE ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime}`);
-            continue;
+            existingByIdentity.set(identity, created.meal || meal);
+            summary.created += 1;
+            console.log(`CREATE ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime} (${date})`);
         }
-
-        const created = await requestJson(baseUrl, '/api/meals', {
-            method: 'POST',
-            headers: buildAuthHeaders(token),
-            body: JSON.stringify(meal)
-        });
-        existingByIdentity.set(identity, created.meal || meal);
-        summary.created += 1;
-        console.log(`CREATE ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime}`);
     }
 
     console.log(

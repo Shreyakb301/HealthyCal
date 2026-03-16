@@ -247,7 +247,19 @@ const MealLogPage = () => {
         setError('');
 
         try {
-            const data = await mealsAPI.getByDate(date);
+            let data = await mealsAPI.getByDate(date);
+
+            // If no data for current selected date, proactively try today (sync with push script behavior)
+            if ((!Array.isArray(data) || data.length === 0) && date !== todayStr()) {
+                const today = todayStr();
+                const todayData = await mealsAPI.getByDate(today);
+
+                if (Array.isArray(todayData) && todayData.length > 0) {
+                    setSelectedDate(today);
+                    data = todayData;
+                }
+            }
+
             setMeals(data);
         } catch (err) {
             setError(err.message || 'Failed to load meals');
@@ -383,7 +395,7 @@ const MealLogPage = () => {
 
     const pageSubtitle =
         activeTab === 'log'
-            ? `${formatDisplayDate(selectedDate)} - ${formatMetric(dayTotals.calories)} kcal logged`
+            ? formatDisplayDate(selectedDate)
             : 'Build, save, and reuse customized meals';
 
     const fillMealInput = (entry, successMessage = 'Meal input updated.') => {
@@ -533,14 +545,21 @@ const MealLogPage = () => {
         if (!nutritionModal) return;
 
         const entry = entryFromDraft(nutritionModal.draft);
-        setCustomInput({
-            name: entry.name,
-            amount: entry.serving,
-            calories: formatMetric(entry.calories),
-            ...formatNutrients(entry.macros)
-        });
+
+        const ingredient = {
+            id: uid(),
+            name: entry.name || 'Custom ingredient',
+            serving: entry.serving,
+            calories: entry.calories,
+            macros: entry.macros
+        };
+
+        setCustomFoods((current) => [...current, ingredient]);
+        setSelectedCustomFoodId(ingredient.id);
+        setCustomMealName((current) => current.trim() || ingredient.name);
+        setCustomInput(initialCustomInput);
         setNutritionModal(null);
-        setSuccess('Nutrition added to Customize Input Values.');
+        setSuccess('Nutrition added to customized meal.');
         setError('');
     };
 
@@ -608,14 +627,16 @@ const MealLogPage = () => {
         event.preventDefault();
         setError('');
 
-        if (!customInput.name.trim() || customInput.calories === '') {
-            setError('Enter a food name and calories before adding it.');
+        const ingredientName = customInput.name.trim() || customMealName.trim();
+
+        if (!ingredientName || customInput.calories === '') {
+            setError('Enter a meal name (or ingredient name) and calories before adding it.');
             return;
         }
 
         const ingredient = {
             id: uid(),
-            name: customInput.name.trim(),
+            name: ingredientName,
             serving: customInput.amount.trim() || '1 serving',
             calories: roundMetric(customInput.calories),
             macros: roundNutrients(customInput)
@@ -643,19 +664,16 @@ const MealLogPage = () => {
     const saveCustomizedMeal = () => {
         setError('');
 
-        if (!customMealName.trim()) {
-            setError('Name your customized meal before saving it.');
-            return;
-        }
-
         if (!customFoods.length) {
             setError('Add at least one ingredient before saving.');
             return;
         }
 
+        const mealName = customMealName.trim() || customFoods[0]?.name || 'Customized meal';
+
         const savedMeal = {
             id: editingCustomMealId || uid(),
-            name: customMealName.trim(),
+            name: mealName,
             calories: customMealTotals.calories,
             macros: roundNutrients(customMealTotals),
             items: customFoods.map(({ id, ...item }) => ({ ...item })),
@@ -1291,13 +1309,6 @@ const MealLogPage = () => {
                                                 Editing saved meal. Update the ingredients and save again.
                                             </div>
                                         )}
-
-                                        <input
-                                            name="name"
-                                            placeholder="Food name"
-                                            value={customInput.name}
-                                            onChange={handleCustomInputChange}
-                                        />
 
                                         <div className="search-row">
                                             <input
