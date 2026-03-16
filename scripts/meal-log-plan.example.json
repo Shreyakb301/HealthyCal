@@ -1,0 +1,110 @@
+{
+  "timezone": "America/Indiana/Indianapolis",
+  "days": {
+    "default": [
+      {
+        "mealType": "breakfast",
+        "time": "08:00",
+        "name": "Protein oats with berries",
+        "amount": "1 bowl",
+        "calories": 430,
+        "macros": {
+          "carbs": 52,
+          "protein": 29,
+          "fat": 11,
+          "fiber": 8,
+          "sugar": 12
+        }
+      },
+      {
+        "mealType": "lunch",
+        "time": "12:30",
+        "name": "Chicken rice bowl",
+        "amount": "1 bowl",
+        "calories": 610,
+        "macros": {
+          "carbs": 63,
+          "protein": 41,
+          "fat": 18,
+          "fiber": 6,
+          "sodium": 540
+        }
+      },
+      {
+        "mealType": "snack",
+        "time": "15:30",
+        "name": "Greek yogurt and banana",
+        "amount": "1 serving",
+        "calories": 220,
+        "macros": {
+          "carbs": 28,
+          "protein": 17,
+          "fat": 4,
+          "fiber": 3,
+          "sugar": 18
+        }
+      },
+      {
+        "mealType": "dinner",
+        "time": "19:00",
+        "name": "Salmon with potatoes",
+        "amount": "1 plate",
+        "calories": 680,
+        "macros": {
+          "carbs": 42,
+          "protein": 46,
+          "fat": 29,
+          "fiber": 5,
+          "sodium": 470
+        }
+      }
+    ],
+    "saturday": [
+      {
+        "mealType": "breakfast",
+        "time": "09:00",
+        "name": "Eggs and toast",
+        "amount": "2 eggs + 2 slices toast",
+        "calories": 390,
+        "macros": {
+          "carbs": 28,
+          "protein": 24,
+          "fat": 18,
+          "fiber": 4,
+          "cholesterol": 370
+        }
+      },
+      {
+        "mealType": "dinner",
+        "time": "19:30",
+        "name": "Pasta with chicken",
+        "amount": "1 bowl",
+        "calories": 710,
+        "macros": {
+          "carbs": 74,
+          "protein": 38,
+          "fat": 22,
+          "fiber": 6,
+          "sodium": 620
+        }
+      }
+    ]
+  },
+  "dates": {
+    "2026-03-17": [
+      {
+        "mealType": "lunch",
+        "time": "12:15",
+        "name": "Rajma with rice",
+        "amount": "1 bowl + 1 cup rice",
+        "calories": 540,
+        "macros": {
+          "carbs": 69,
+          "protein": 18,
+          "fat": 8,
+          "fiber": 14
+        }
+      }
+    ]
+  }
+}

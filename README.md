@@ -44,6 +44,7 @@ Available npm scripts (from `package.json`):
 - `server` — run backend (`node server/index.js`)
 - `dev:server` — run backend with `nodemon`
 - `dev:all` — run both backend and frontend concurrently
+- `push:daily-meals` — log in to HealthyCal and push the configured meals for the target day
 - `build` / `preview` — build/preview frontend
 - `test` — runs end-to-end and unit tests (Cypress + Jest)
 
@@ -70,9 +71,72 @@ Available npm scripts (from `package.json`):
 
 See the server route files for full details: [server/routes/auth.js](server/routes/auth.js) and [server/routes/meals.js](server/routes/meals.js).
 
+## Daily meal-log automation
+Use `scripts/pushDailyMealLog.js` when you want the same HealthyCal account to receive a meal log automatically every day through the existing website API.
+
+1. Create a plan file from the example:
+
+```bash
+cp scripts/meal-log-plan.example.json scripts/meal-log-plan.json
+```
+
+2. Update `scripts/meal-log-plan.json` with the meals you want posted.
+
+Supported config shapes:
+- `days.default` for every day
+- `days.monday`, `days.tuesday`, etc. for weekday-specific meals
+- `dates.YYYY-MM-DD` for one-off overrides
+
+Each meal entry supports:
+- `mealType`: `breakfast`, `lunch`, `dinner`, or `snack`
+- `time`: `HH:MM` 24-hour local time
+- `name`
+- `amount`
+- `calories`
+- `imageUrl` (optional)
+- `macros` (optional: `carbs`, `protein`, `fat`, `fiber`, `sugar`, `sodium`, `cholesterol`, `saturatedFat`)
+
+3. Run a dry run first:
+
+```bash
+MEAL_LOG_BASE_URL=https://your-site.example.com \
+MEAL_LOG_EMAIL=you@example.com \
+MEAL_LOG_PASSWORD=your-password \
+npm run push:daily-meals -- --dry-run
+```
+
+4. Push the meals for today, or backfill a specific date:
+
+```bash
+MEAL_LOG_BASE_URL=https://your-site.example.com \
+MEAL_LOG_EMAIL=you@example.com \
+MEAL_LOG_PASSWORD=your-password \
+npm run push:daily-meals
+```
+
+```bash
+MEAL_LOG_BASE_URL=https://your-site.example.com \
+MEAL_LOG_EMAIL=you@example.com \
+MEAL_LOG_PASSWORD=your-password \
+npm run push:daily-meals -- --date=2026-03-17
+```
+
+Optional environment variables:
+- `MEAL_LOG_FILE` — alternate JSON config path
+- `MEAL_LOG_TIMEZONE` — overrides the plan timezone and the machine timezone
+- `MEAL_LOG_DATE` — alternate target date
+- `MEAL_LOG_DRY_RUN=true` — preview mode without POST/PUT requests
+
+The script authenticates through `/api/auth/login`, fetches existing meals for the target date, and updates matching entries instead of duplicating them. Matching uses `mealType + name + amount + scheduled time`.
+
+Example `cron` entry for every day at 8:00 AM local time:
+
+```cron
+0 8 * * * cd /Users/shreyakb/HealthyCal && TZ=America/Indiana/Indianapolis MEAL_LOG_BASE_URL=https://your-site.example.com MEAL_LOG_EMAIL=you@example.com MEAL_LOG_PASSWORD='your-password' npm run push:daily-meals >> /tmp/healthycal-meal-log.log 2>&1
+```
+
 ## Testing
 - End-to-end tests: Cypress config and specs are under `cypress/e2e` (e.g. `cypress/e2e/auth.cy.js`).
 - Unit/API tests: Jest + Supertest tests are located in `server/tests` (e.g. `server/tests/auth.test.js`).
 - Run all tests: `npm test` (this will start the app and run E2E + unit tests per `package.json`).
-
 
