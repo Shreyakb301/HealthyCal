@@ -156,14 +156,45 @@ router.get('/', async (req, res) => {
     }
 });
 
+const getStartOfWeek = (date) => {
+    const weekStart = new Date(date);
+    const day = weekStart.getDay();
+    const mondayOffset = (day + 6) % 7; // Monday = 0, Sunday = 6
+    weekStart.setDate(weekStart.getDate() - mondayOffset);
+    weekStart.setHours(0, 0, 0, 0);
+    weekStart.setMilliseconds(0);
+    return weekStart;
+};
+
 router.get('/weekly', async (req, res) => {
     try {
-        const days = [];
-        const now = new Date();
+        const { weekStart, weekOffset } = req.query;
+        let startOfWeek;
 
-        for (let i = 6; i >= 0; i--) {
-            const start = new Date(now);
-            start.setDate(now.getDate() - i);
+        if (weekStart) {
+            const parsed = new Date(`${weekStart}T00:00:00`);
+            if (Number.isNaN(parsed.getTime())) {
+                return res.status(400).json({ message: 'Invalid weekStart date' });
+            }
+            startOfWeek = getStartOfWeek(parsed);
+        } else if (weekOffset !== undefined) {
+            const offset = Number(weekOffset);
+            if (!Number.isFinite(offset)) {
+                return res.status(400).json({ message: 'Invalid weekOffset' });
+            }
+            const now = new Date();
+            const base = getStartOfWeek(now);
+            base.setDate(base.getDate() + offset * 7);
+            startOfWeek = base;
+        } else {
+            startOfWeek = getStartOfWeek(new Date());
+        }
+
+        const days = [];
+
+        for (let i = 0; i < 7; i++) {
+            const start = new Date(startOfWeek);
+            start.setDate(startOfWeek.getDate() + i);
             start.setHours(0, 0, 0, 0);
 
             const end = new Date(start);

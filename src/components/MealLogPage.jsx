@@ -12,7 +12,17 @@ const toDateStr = (date) => {
 };
 
 const fromDateStr = (dateStr) => {
-    const [year, month, day] = dateStr.split('-').map(Number);
+    if (!dateStr || typeof dateStr !== 'string') {
+        return new Date();
+    }
+
+    const parts = dateStr.split('-').map(Number);
+
+    if (parts.length !== 3 || parts.some((num) => Number.isNaN(num))) {
+        return new Date();
+    }
+
+    const [year, month, day] = parts;
     return new Date(year, month - 1, day);
 };
 
@@ -341,13 +351,17 @@ const MealLogPage = () => {
     }, [nutritionModal, mealTypeModal]);
 
     const changeDate = (delta) => {
-        const nextDate = fromDateStr(selectedDate);
-        nextDate.setDate(nextDate.getDate() + delta);
-        const formatted = toDateStr(nextDate);
+        setSelectedDate((currentDate) => {
+            const nextDate = fromDateStr(currentDate);
+            nextDate.setDate(nextDate.getDate() + delta);
+            const formatted = toDateStr(nextDate);
 
-        if (formatted <= todayStr()) {
-            setSelectedDate(formatted);
-        }
+            if (formatted <= todayStr()) {
+                return formatted;
+            }
+
+            return currentDate;
+        });
     };
 
     const isToday = selectedDate === todayStr();
@@ -623,14 +637,34 @@ const MealLogPage = () => {
         setCustomInput((prev) => ({ ...prev, [name]: value }));
     };
 
+    const calculateCaloriesFromMacros = (source) => {
+        const protein = roundMetric(source.protein);
+        const carbs = roundMetric(source.carbs);
+        const fat = roundMetric(source.fat);
+
+        if (!protein && !carbs && !fat) {
+            return 0;
+        }
+
+        return roundMetric(carbs * 4 + protein * 4 + fat * 9);
+    };
+
     const addCustomIngredient = (event) => {
         event.preventDefault();
         setError('');
 
         const ingredientName = customInput.name.trim() || customMealName.trim();
+        const caloriesInput = String(customInput.calories || '').trim();
+        const hasCalories = caloriesInput !== '';
+        const caloriesValue = hasCalories ? roundMetric(caloriesInput) : calculateCaloriesFromMacros(customInput);
 
-        if (!ingredientName || customInput.calories === '') {
-            setError('Enter a meal name (or ingredient name) and calories before adding it.');
+        if (!ingredientName) {
+            setError('Enter a meal name (or ingredient name) before adding it.');
+            return;
+        }
+
+        if (!hasCalories && caloriesValue === 0) {
+            setError('Enter calories or macros before adding it.');
             return;
         }
 
@@ -638,7 +672,7 @@ const MealLogPage = () => {
             id: uid(),
             name: ingredientName,
             serving: customInput.amount.trim() || '1 serving',
-            calories: roundMetric(customInput.calories),
+            calories: caloriesValue,
             macros: roundNutrients(customInput)
         };
 
@@ -752,7 +786,8 @@ const MealLogPage = () => {
                                 type="button"
                                 className="date-nav-btn"
                                 onClick={() => changeDate(-1)}
-                                title="Previous day"
+                                disabled={loading}
+                                title={loading ? 'Waiting for meal data to load' : 'Previous day'}
                             >
                                 <svg
                                     width="18"
@@ -791,8 +826,8 @@ const MealLogPage = () => {
                                     type="button"
                                     className="date-nav-btn"
                                     onClick={() => changeDate(1)}
-                                    disabled={isToday}
-                                    title="Next day"
+                                    disabled={isToday || loading}
+                                    title={loading ? 'Waiting for meal data to load' : 'Next day'}
                                 >
                                     <svg
                                         width="18"

@@ -120,8 +120,9 @@ export const dashboardAPI = {
     getSummary: async () => {
         return apiRequest('/dashboard');
     },
-    getWeekly: async () => {
-        return apiRequest('/dashboard/weekly');
+    getWeekly: async (weekStart) => {
+        const qs = weekStart ? `?weekStart=${encodeURIComponent(weekStart)}` : '';
+        return apiRequest(`/dashboard/weekly${qs}`);
     }
 };
 

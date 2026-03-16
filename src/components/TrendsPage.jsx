@@ -41,24 +41,80 @@ const getMondayFirstIndex = (dateString) => {
     return (date.getDay() + 6) % 7;
 };
 
+const getStartOfWeek = (date) => {
+    const weekStart = new Date(date);
+    const day = weekStart.getDay();
+    const mondayOffset = (day + 6) % 7;
+    weekStart.setDate(weekStart.getDate() - mondayOffset);
+    weekStart.setHours(0, 0, 0, 0);
+    weekStart.setMilliseconds(0);
+    return weekStart;
+};
+
+const formatDateLabel = (date) =>
+    new Date(date).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric'
+    });
+
 const TrendsPage = () => {
     const [weeklyData, setWeeklyData] = useState([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState('');
+    const [weekStartDate, setWeekStartDate] = useState(getStartOfWeek(new Date()));
+    const [animateBars, setAnimateBars] = useState(false);
+
+    const currentWeekStart = getStartOfWeek(new Date());
+    const isCurrentWeek = weekStartDate.toISOString().slice(0, 10) === currentWeekStart.toISOString().slice(0, 10);
+    const weekEndDate = new Date(weekStartDate);
+    weekEndDate.setDate(weekStartDate.getDate() + 6);
+
+    const goToPreviousWeek = () => {
+        setWeekStartDate((prev) => {
+            const next = new Date(prev);
+            next.setDate(prev.getDate() - 7);
+            return next;
+        });
+    };
+
+    const goToNextWeek = () => {
+        setWeekStartDate((prev) => {
+            const next = new Date(prev);
+            next.setDate(prev.getDate() + 7);
+            return next;
+        });
+    };
+
+    const jumpToCurrentWeek = () => setWeekStartDate(currentWeekStart);
 
     useEffect(() => {
         const loadWeekly = async () => {
             try {
-                const data = await dashboardAPI.getWeekly();
+                setAnimateBars(false);
+                setLoading(true);
+                setError('');
+                const weekStart = weekStartDate.toISOString().slice(0, 10);
+                const data = await dashboardAPI.getWeekly(weekStart);
                 setWeeklyData(data.days || []);
             } catch (err) {
                 setError(err.message || 'Failed to load weekly trends');
+                setWeeklyData([]);
             } finally {
                 setLoading(false);
             }
         };
+
         loadWeekly();
-    }, []);
+    }, [weekStartDate]);
+
+    useEffect(() => {
+        if (weeklyData.length && !loading) {
+            const timer = setTimeout(() => setAnimateBars(true), 30);
+            return () => clearTimeout(timer);
+        }
+
+        return undefined;
+    }, [weeklyData, loading]);
 
     const maxCalories = Math.max(...weeklyData.map(d => d.calories), 2000);
     const mondayFirstWeeklyData = [...weeklyData].sort(
@@ -69,7 +125,23 @@ const TrendsPage = () => {
         <AppShell title="Trends" subtitle="Your weekly nutrition activity">
             <div className="trends-page-wrapper">
                 <article className="feature-card trends-main-card">
-                    <h2>Weekly Calorie Intake</h2>
+                    <div className="trends-week-header">
+                        <h2>Weekly Calorie Intake</h2>
+                        <div className="week-controls">
+                            <button type="button" onClick={goToPreviousWeek}>
+                                ← Previous Week
+                            </button>
+                            <button type="button" onClick={goToNextWeek} disabled={isCurrentWeek}>
+                                Next Week →
+                            </button>
+                            <button type="button" onClick={jumpToCurrentWeek} disabled={isCurrentWeek}>
+                                This Week
+                            </button>
+                        </div>
+                    </div>
+                    <p className="week-range">
+                        {formatDateLabel(weekStartDate)} - {formatDateLabel(weekEndDate)}
+                    </p>
                     {loading ? (
                         <p>Loading trends...</p>
                     ) : error ? (
@@ -83,7 +155,7 @@ const TrendsPage = () => {
                                             <div
                                                 className="bar-inner"
                                                 style={{
-                                                    height: `${(day.calories / maxCalories) * 100}%`,
+                                                    height: animateBars ? `${(day.calories / maxCalories) * 100}%` : '0%',
                                                     backgroundColor: day.calories > 2200 ? '#e75a5a' : '#56ae6d'
                                                 }}
                                             >
@@ -301,6 +373,38 @@ const TrendsPage = () => {
                     grid-template-columns: 1.5fr 1fr;
                     gap: 2rem;
                     margin-top: 2rem;
+                }
+                .trends-week-header {
+                    display: flex;
+                    justify-content: space-between;
+                    align-items: flex-start;
+                    gap: 1rem;
+                    flex-wrap: wrap;
+                }
+                .week-controls {
+                    display: flex;
+                    gap: 0.5rem;
+                    flex-wrap: wrap;
+                }
+                .week-controls button {
+                    border: 1px solid var(--border);
+                    background: var(--bg);
+                    color: var(--text);
+                    border-radius: 8px;
+                    padding: 0.3rem 0.7rem;
+                    font-size: 0.8rem;
+                    font-weight: 600;
+                    cursor: pointer;
+                }
+                .week-controls button[disabled] {
+                    opacity: 0.45;
+                    cursor: not-allowed;
+                }
+                .week-range {
+                    margin: 0.6rem 0;
+                    color: var(--text-muted);
+                    font-size: 0.88rem;
+                    font-weight: 600;
                 }
             `}</style>
         </AppShell>
