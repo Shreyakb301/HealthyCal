@@ -1,6 +1,6 @@
 #+ HealthyCal — Mindful Eating
 
-HealthyCal is a full-stack web application for tracking meals, nutrition, and daily tips to support mindful eating. It includes a React + Vite frontend and an Express + MongoDB backend with authentication, meal logging, and nutrition lookup features.
+HealthyCal is a full-stack web application for tracking meals, nutrition, and daily tips to support mindful eating. It includes a React + Vite frontend and an Express + MongoDB backend with authentication, meal logging and nutrition lookup features.
 
 ## Features
 - User registration and login (JWT-based)
