@@ -12,6 +12,8 @@
     "dev:all": "concurrently \"npm run dev:server\" \"npm run dev\"",
     "seed:meal-logs": "node server/scripts/seedMealLogs.js",
     "push:daily-meals": "node scripts/pushDailyMealLog.js",
+    "push:daily-meals:daily": "sh scripts/runDailyMealLog.sh",
+    "install:daily-meals-cron": "sh scripts/installDailyMealLogCron.sh",
     "start": "npm run dev:all",
     "test:unit": "NODE_ENV=test NODE_OPTIONS=--experimental-vm-modules jest",
     "test:e2e": "cypress run",

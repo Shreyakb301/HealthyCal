@@ -2,13 +2,17 @@ import 'dotenv/config';
 
 import {
     assertUniqueMealIdentities,
+    calculateMealCalories,
     createMealIdentity,
     getTodayDateString,
     loadMealPlanConfig,
     mealNeedsUpdate,
     normalizeBaseUrl,
     normalizeDateString,
+    normalizeEmailAddress,
     normalizeMealEntry,
+    resolveDailyCalorieLimit,
+    resolveTargetMealLogEmail,
     selectMealsForDate
 } from './lib/mealLogAutomation.js';
 
@@ -156,6 +160,8 @@ const main = async () => {
     const timeZone = process.env.MEAL_LOG_TIMEZONE || config.timezone || process.env.TZ || Intl.DateTimeFormat().resolvedOptions().timeZone;
     const targetDate = normalizeDateString(args.date || process.env.MEAL_LOG_DATE || getTodayDateString(timeZone));
     const days = Number(args.days || process.env.MEAL_LOG_DAYS || 1);
+    const dailyCalorieLimit = resolveDailyCalorieLimit(config);
+    const targetEmail = resolveTargetMealLogEmail(config);
 
     if (!Number.isInteger(days) || days < 1) {
         throw new Error(`Invalid number of days: ${args.days || process.env.MEAL_LOG_DAYS}. Provide an integer >= 1.`);
@@ -163,15 +169,19 @@ const main = async () => {
 
     const datesToProcess = Array.from({ length: days }, (_, i) => addDays(targetDate, i));
     const baseUrl = normalizeBaseUrl(process.env.MEAL_LOG_BASE_URL);
-    const email = String(process.env.MEAL_LOG_EMAIL || 'shreya@healthycal.com').trim();
+    const email = normalizeEmailAddress(process.env.MEAL_LOG_EMAIL || targetEmail);
     const password = String(process.env.MEAL_LOG_PASSWORD || '');
     const dryRun = args.dryRun || envBool(process.env.MEAL_LOG_DRY_RUN);
 
-    if (!baseUrl) {
+    if (targetEmail && email && email !== targetEmail) {
+        throw new Error(`This meal plan is locked to ${targetEmail}. Current MEAL_LOG_EMAIL is ${email}.`);
+    }
+
+    if (!dryRun && !baseUrl) {
         throw new Error('MEAL_LOG_BASE_URL is required.');
     }
 
-    if (!email || !password) {
+    if (!dryRun && (!email || !password)) {
         throw new Error('MEAL_LOG_EMAIL and MEAL_LOG_PASSWORD are required.');
     }
 
@@ -183,23 +193,25 @@ const main = async () => {
 
     let token;
 
-    try {
-        token = await login(baseUrl, email, password);
-    } catch (error) {
-        const messageText = String(error?.message || '').toLowerCase();
+    if (!dryRun) {
+        try {
+            token = await login(baseUrl, email, password);
+        } catch (error) {
+            const messageText = String(error?.message || '').toLowerCase();
 
-        if (messageText.includes('invalid credentials') || messageText.includes('401')) {
-            const username = process.env.MEAL_LOG_USERNAME || email.split('@')[0];
-            console.log(`Login failed with invalid credentials, attempting register as ${username} <${email}>`);
+            if (messageText.includes('invalid credentials') || messageText.includes('401')) {
+                const username = process.env.MEAL_LOG_USERNAME || email.split('@')[0];
+                console.log(`Login failed with invalid credentials, attempting register as ${username} <${email}>`);
 
-            try {
-                token = await registerUser(baseUrl, username, email, password);
-                console.log('User registered successfully, proceeding with meal push.');
-            } catch (registerError) {
-                throw new Error(`Login failed and registration also failed: ${registerError.message || registerError}`);
+                try {
+                    token = await registerUser(baseUrl, username, email, password);
+                    console.log('User registered successfully, proceeding with meal push.');
+                } catch (registerError) {
+                    throw new Error(`Login failed and registration also failed: ${registerError.message || registerError}`);
+                }
+            } else {
+                throw error;
             }
-        } else {
-            throw error;
         }
     }
     const summary = {
@@ -223,10 +235,25 @@ const main = async () => {
             continue;
         }
 
+        const plannedCalories = calculateMealCalories(selectedMeals);
+
+        if (dailyCalorieLimit && plannedCalories > dailyCalorieLimit) {
+            console.warn(`Skipping ${date}: planned calories ${plannedCalories} exceed daily limit ${dailyCalorieLimit}.`);
+            continue;
+        }
+
         const desiredMealsForDate = selectedMeals.map((entry, index) => normalizeMealEntry(entry, index, date, timeZone));
         assertUniqueMealIdentities(desiredMealsForDate, timeZone);
 
-        console.log(`\nProcessing ${desiredMealsForDate.length} meals for ${date}...`);
+        console.log(`\nProcessing ${desiredMealsForDate.length} meals for ${date} (${plannedCalories} kcal planned)...`);
+
+        if (dryRun) {
+            for (const meal of desiredMealsForDate) {
+                summary.created += 1;
+                console.log(`DRYRUN CREATE ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime} (${date})`);
+            }
+            continue;
+        }
 
         const existingPayload = await requestJson(baseUrl, `/api/meals?date=${date}`, {
             headers: {
@@ -253,14 +280,6 @@ const main = async () => {
                 console.log(`SKIP   ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime} (${date})`);
                 continue;
             }
-
-            if (dryRun) {
-                const action = existingMeal ? 'UPDATE' : 'CREATE';
-                summary[existingMeal ? 'updated' : 'created'] += 1;
-                console.log(`DRYRUN ${action.padEnd(6)} ${meal.mealType.padEnd(9)} ${meal.name} @ ${meal.scheduledTime} (${date})`);
-                continue;
-            }
-
             if (existingMeal) {
                 await requestJson(baseUrl, `/api/meals/${existingMeal._id}`, {
                     method: 'PUT',

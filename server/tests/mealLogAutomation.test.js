@@ -2,9 +2,13 @@ import { describe, expect, test } from '@jest/globals';
 
 const {
     assertUniqueMealIdentities,
+    calculateMealCalories,
     createMealIdentity,
     getWeekdayKey,
     normalizeMealEntry,
+    normalizeEmailAddress,
+    resolveDailyCalorieLimit,
+    resolveTargetMealLogEmail,
     selectMealsForDate
 } = await import('../../scripts/lib/mealLogAutomation.js');
 
@@ -103,5 +107,63 @@ describe('meal log automation helpers', () => {
                 'America/Indiana/Indianapolis'
             )
         ).toThrow('Duplicate meal entries detected');
+    });
+
+    test('selectMealsForDate can generate a realistic day under the calorie cap', () => {
+        const config = {
+            timezone: 'America/Indiana/Indianapolis',
+            dailyCalorieLimit: 2000,
+            generator: {
+                enabled: true,
+                seed: 'weekly-plan',
+                targetDailyCalories: 1800,
+                maxDailyCalories: 2000
+            }
+        };
+
+        const meals = selectMealsForDate(config, '2026-04-07', 'America/Indiana/Indianapolis');
+        const totalCalories = calculateMealCalories(meals);
+
+        expect(meals).toHaveLength(4);
+        expect(meals.map((meal) => meal.mealType)).toEqual(['breakfast', 'lunch', 'snack', 'dinner']);
+        expect(totalCalories).toBeLessThanOrEqual(2000);
+        expect(totalCalories).toBeGreaterThanOrEqual(1550);
+    });
+
+    test('explicit date config still wins over generated meals', () => {
+        const config = {
+            generator: {
+                enabled: true,
+                seed: 'weekly-plan'
+            },
+            dates: {
+                '2026-04-07': [{ name: 'Manual override', calories: 300 }]
+            }
+        };
+
+        expect(selectMealsForDate(config, '2026-04-07', 'America/Indiana/Indianapolis')).toEqual([
+            { name: 'Manual override', calories: 300 }
+        ]);
+    });
+
+    test('resolveDailyCalorieLimit prefers the explicit top-level limit', () => {
+        expect(
+            resolveDailyCalorieLimit({
+                dailyCalorieLimit: 2000,
+                generator: {
+                    maxDailyCalories: 1900
+                }
+            })
+        ).toBe(2000);
+    });
+
+    test('resolveTargetMealLogEmail normalizes the configured account email', () => {
+        expect(
+            resolveTargetMealLogEmail({
+                targetEmail: ' Shreya@HealthyCal.com '
+            })
+        ).toBe('shreya@healthycal.com');
+
+        expect(normalizeEmailAddress(' Shreya@HealthyCal.com ')).toBe('shreya@healthycal.com');
     });
 });

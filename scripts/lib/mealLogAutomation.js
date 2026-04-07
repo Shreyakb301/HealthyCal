@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
+import { generateRealisticMealsForDate } from './realisticMealPlan.js';
 
 export const VALID_MEAL_TYPES = ['breakfast', 'lunch', 'dinner', 'snack'];
 export const MACRO_KEYS = ['carbs', 'protein', 'fat', 'fiber', 'sugar', 'sodium', 'cholesterol', 'saturatedFat'];
@@ -79,6 +80,16 @@ const normalizeComparableText = (value) =>
     normalizeText(value)
         .toLowerCase()
         .replace(/\s+/g, ' ');
+
+export const normalizeEmailAddress = (value) => normalizeText(value).toLowerCase();
+
+export const resolveTargetMealLogEmail = (config) => {
+    if (!config || typeof config !== 'object' || Array.isArray(config)) {
+        return '';
+    }
+
+    return normalizeEmailAddress(config.targetEmail);
+};
 
 export const normalizeBaseUrl = (value) => normalizeText(value).replace(/\/+$/, '');
 
@@ -204,6 +215,22 @@ const normalizeMacros = (macros = {}) =>
         return acc;
     }, {});
 
+export const calculateMealCalories = (meals = []) =>
+    meals.reduce((sum, meal) => sum + toNonNegativeNumber(meal?.calories || 0, 'meal calories'), 0);
+
+export const resolveDailyCalorieLimit = (config) => {
+    if (!config || typeof config !== 'object' || Array.isArray(config)) {
+        return null;
+    }
+
+    const limit = config.dailyCalorieLimit ?? config.generator?.maxDailyCalories;
+    if (limit === undefined || limit === null || limit === '') {
+        return null;
+    }
+
+    return toNonNegativeNumber(limit, 'dailyCalorieLimit');
+};
+
 export const selectMealsForDate = (config, targetDate, timeZone) => {
     if (Array.isArray(config)) {
         return config;
@@ -236,7 +263,17 @@ export const selectMealsForDate = (config, targetDate, timeZone) => {
         return config.meals;
     }
 
-    throw new Error(`No meals configured for ${targetDate}. Add days.default, days.${weekdayKey}, dates.${targetDate}, or a top-level meals array.`);
+    if (config.generator && config.generator.enabled !== false) {
+        return generateRealisticMealsForDate(targetDate, {
+            ...config.generator,
+            maxDailyCalories: config.generator?.maxDailyCalories ?? config.dailyCalorieLimit ?? 2000,
+            timeZone
+        }).meals;
+    }
+
+    throw new Error(
+        `No meals configured for ${targetDate}. Add days.default, days.${weekdayKey}, dates.${targetDate}, a top-level meals array, or a generator block.`
+    );
 };
 
 export const normalizeMealEntry = (entry, index, targetDate, timeZone) => {

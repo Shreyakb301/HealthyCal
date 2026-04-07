@@ -1,33 +1,40 @@
 {
   "timezone": "America/Indiana/Indianapolis",
+  "dailyCalorieLimit": 2000,
   "days": {
-    "default": [
+    "monday": [
       {
         "mealType": "breakfast",
         "time": "08:00",
-        "name": "Protein oats with berries",
+        "name": "Oatmeal with berries, protein powder, granola & chia",
         "amount": "1 bowl",
-        "calories": 430,
+        "calories": 473,
         "macros": {
-          "carbs": 52,
-          "protein": 29,
-          "fat": 11,
-          "fiber": 8,
-          "sugar": 12
+          "carbs": 58,
+          "protein": 31,
+          "fat": 13,
+          "fiber": 10,
+          "sugar": 13,
+          "sodium": 220,
+          "cholesterol": 15,
+          "saturatedFat": 3
         }
       },
       {
         "mealType": "lunch",
         "time": "12:30",
-        "name": "Chicken rice bowl",
-        "amount": "1 bowl",
-        "calories": 610,
+        "name": "Chicken curry with rice",
+        "amount": "1 bowl + 1 cup rice",
+        "calories": 510,
         "macros": {
-          "carbs": 63,
-          "protein": 41,
+          "carbs": 52,
+          "protein": 35,
           "fat": 18,
-          "fiber": 6,
-          "sodium": 540
+          "fiber": 4,
+          "sugar": 6,
+          "sodium": 560,
+          "cholesterol": 115,
+          "saturatedFat": 5
         }
       },
       {
@@ -35,74 +42,453 @@
         "time": "15:30",
         "name": "Greek yogurt and banana",
         "amount": "1 serving",
-        "calories": 220,
+        "calories": 216,
         "macros": {
           "carbs": 28,
           "protein": 17,
           "fat": 4,
           "fiber": 3,
-          "sugar": 18
+          "sugar": 18,
+          "sodium": 95,
+          "cholesterol": 8,
+          "saturatedFat": 1.5
         }
       },
       {
         "mealType": "dinner",
         "time": "19:00",
-        "name": "Salmon with potatoes",
+        "name": "Grilled chicken meal with salad",
         "amount": "1 plate",
-        "calories": 680,
+        "calories": 424,
+        "macros": {
+          "carbs": 30,
+          "protein": 40,
+          "fat": 16,
+          "fiber": 6,
+          "sugar": 8,
+          "sodium": 430,
+          "cholesterol": 115,
+          "saturatedFat": 3.5
+        }
+      }
+    ],
+    "tuesday": [
+      {
+        "mealType": "breakfast",
+        "time": "08:00",
+        "name": "Eggs, yogurt and fruit",
+        "amount": "2 eggs + 1 bowl yogurt",
+        "calories": 370,
+        "macros": {
+          "carbs": 24,
+          "protein": 28,
+          "fat": 18,
+          "fiber": 3,
+          "sugar": 11,
+          "sodium": 330,
+          "cholesterol": 290,
+          "saturatedFat": 5
+        }
+      },
+      {
+        "mealType": "lunch",
+        "time": "12:20",
+        "name": "Burrito wrap",
+        "amount": "1 wrap",
+        "calories": 484,
+        "macros": {
+          "carbs": 54,
+          "protein": 31,
+          "fat": 16,
+          "fiber": 10,
+          "sugar": 5,
+          "sodium": 560,
+          "cholesterol": 70,
+          "saturatedFat": 4
+        }
+      },
+      {
+        "mealType": "snack",
+        "time": "15:20",
+        "name": "Apple with peanut butter",
+        "amount": "1 apple + 1 tbsp peanut butter",
+        "calories": 197,
+        "macros": {
+          "carbs": 24,
+          "protein": 5,
+          "fat": 9,
+          "fiber": 5,
+          "sugar": 18,
+          "sodium": 90,
+          "cholesterol": 0,
+          "saturatedFat": 1.5
+        }
+      },
+      {
+        "mealType": "dinner",
+        "time": "19:00",
+        "name": "Chicken curry with chapati",
+        "amount": "1 bowl + 2 chapatis",
+        "calories": 482,
+        "macros": {
+          "carbs": 45,
+          "protein": 35,
+          "fat": 18,
+          "fiber": 5,
+          "sugar": 5,
+          "sodium": 560,
+          "cholesterol": 115,
+          "saturatedFat": 5
+        }
+      }
+    ],
+    "wednesday": [
+      {
+        "mealType": "breakfast",
+        "time": "08:10",
+        "name": "Greek yogurt with fruit and granola",
+        "amount": "1 bowl",
+        "calories": 350,
         "macros": {
           "carbs": 42,
-          "protein": 46,
-          "fat": 29,
+          "protein": 23,
+          "fat": 10,
           "fiber": 5,
-          "sodium": 470
+          "sugar": 17,
+          "sodium": 115,
+          "cholesterol": 12,
+          "saturatedFat": 2.5
+        }
+      },
+      {
+        "mealType": "lunch",
+        "time": "12:30",
+        "name": "Rajma with rice",
+        "amount": "1 bowl + 1 cup rice",
+        "calories": 420,
+        "macros": {
+          "carbs": 69,
+          "protein": 18,
+          "fat": 8,
+          "fiber": 14,
+          "sugar": 6,
+          "sodium": 420,
+          "cholesterol": 0,
+          "saturatedFat": 1
+        }
+      },
+      {
+        "mealType": "snack",
+        "time": "15:30",
+        "name": "Mixed nuts",
+        "amount": "1 small handful",
+        "calories": 207,
+        "macros": {
+          "carbs": 6.5,
+          "protein": 5.3,
+          "fat": 17.7,
+          "fiber": 2.6,
+          "sugar": 1.4,
+          "sodium": 4,
+          "cholesterol": 0,
+          "saturatedFat": 2.9
+        }
+      },
+      {
+        "mealType": "dinner",
+        "time": "19:05",
+        "name": "Pasta with vegetables and chicken",
+        "amount": "1 bowl",
+        "calories": 534,
+        "macros": {
+          "carbs": 66,
+          "protein": 27,
+          "fat": 18,
+          "fiber": 6,
+          "sugar": 7,
+          "sodium": 540,
+          "cholesterol": 80,
+          "saturatedFat": 4.5
+        }
+      }
+    ],
+    "thursday": [
+      {
+        "mealType": "breakfast",
+        "time": "07:50",
+        "name": "Protein oatmeal with apple and chia seeds",
+        "amount": "1 bowl",
+        "calories": 431,
+        "macros": {
+          "carbs": 54,
+          "protein": 29,
+          "fat": 11,
+          "fiber": 9,
+          "sugar": 14,
+          "sodium": 210,
+          "cholesterol": 12,
+          "saturatedFat": 2.5
+        }
+      },
+      {
+        "mealType": "lunch",
+        "time": "12:35",
+        "name": "Pasta with vegetables and chicken",
+        "amount": "1 bowl",
+        "calories": 528,
+        "macros": {
+          "carbs": 62,
+          "protein": 34,
+          "fat": 16,
+          "fiber": 6,
+          "sugar": 7,
+          "sodium": 510,
+          "cholesterol": 85,
+          "saturatedFat": 4
+        }
+      },
+      {
+        "mealType": "snack",
+        "time": "15:25",
+        "name": "Hummus with carrots and pita",
+        "amount": "1 snack plate",
+        "calories": 187,
+        "macros": {
+          "carbs": 24,
+          "protein": 7,
+          "fat": 7,
+          "fiber": 5,
+          "sugar": 5,
+          "sodium": 240,
+          "cholesterol": 0,
+          "saturatedFat": 1
+        }
+      },
+      {
+        "mealType": "dinner",
+        "time": "19:10",
+        "name": "Tacos",
+        "amount": "3 tacos",
+        "calories": 482,
+        "macros": {
+          "carbs": 48,
+          "protein": 32,
+          "fat": 18,
+          "fiber": 7,
+          "sugar": 4,
+          "sodium": 650,
+          "cholesterol": 70,
+          "saturatedFat": 5
+        }
+      }
+    ],
+    "friday": [
+      {
+        "mealType": "breakfast",
+        "time": "08:10",
+        "name": "Paneer paratha with yogurt",
+        "amount": "2 parathas",
+        "calories": 439,
+        "macros": {
+          "carbs": 43,
+          "protein": 24,
+          "fat": 19,
+          "fiber": 4,
+          "sugar": 6,
+          "sodium": 420,
+          "cholesterol": 35,
+          "saturatedFat": 8
+        }
+      },
+      {
+        "mealType": "lunch",
+        "time": "12:25",
+        "name": "Sandwich with salad",
+        "amount": "1 sandwich + salad",
+        "calories": 414,
+        "macros": {
+          "carbs": 44,
+          "protein": 28,
+          "fat": 14,
+          "fiber": 5,
+          "sugar": 7,
+          "sodium": 620,
+          "cholesterol": 60,
+          "saturatedFat": 3
+        }
+      },
+      {
+        "mealType": "snack",
+        "time": "15:40",
+        "name": "Protein bar",
+        "amount": "1 bar",
+        "calories": 223,
+        "macros": {
+          "carbs": 22,
+          "protein": 20,
+          "fat": 7,
+          "fiber": 6,
+          "sugar": 9,
+          "sodium": 220,
+          "cholesterol": 5,
+          "saturatedFat": 2
+        }
+      },
+      {
+        "mealType": "dinner",
+        "time": "19:15",
+        "name": "Burrito wrap",
+        "amount": "1 wrap",
+        "calories": 506,
+        "macros": {
+          "carbs": 58,
+          "protein": 33,
+          "fat": 18,
+          "fiber": 10,
+          "sugar": 5,
+          "sodium": 590,
+          "cholesterol": 75,
+          "saturatedFat": 4.5
         }
       }
     ],
     "saturday": [
       {
         "mealType": "breakfast",
-        "time": "09:00",
-        "name": "Eggs and toast",
-        "amount": "2 eggs + 2 slices toast",
-        "calories": 390,
+        "time": "08:30",
+        "name": "Oatmeal with fruit and yogurt",
+        "amount": "1 bowl",
+        "calories": 357,
         "macros": {
-          "carbs": 28,
-          "protein": 24,
+          "carbs": 49,
+          "protein": 20,
+          "fat": 9,
+          "fiber": 8,
+          "sugar": 15,
+          "sodium": 140,
+          "cholesterol": 10,
+          "saturatedFat": 2
+        }
+      },
+      {
+        "mealType": "lunch",
+        "time": "12:40",
+        "name": "Chicken curry with rice",
+        "amount": "1 bowl + 1 cup rice",
+        "calories": 510,
+        "macros": {
+          "carbs": 52,
+          "protein": 35,
           "fat": 18,
           "fiber": 4,
-          "cholesterol": 370
+          "sugar": 6,
+          "sodium": 560,
+          "cholesterol": 115,
+          "saturatedFat": 5
+        }
+      },
+      {
+        "mealType": "snack",
+        "time": "15:45",
+        "name": "Cottage cheese with fruit",
+        "amount": "1 bowl",
+        "calories": 163,
+        "macros": {
+          "carbs": 18,
+          "protein": 16,
+          "fat": 3,
+          "fiber": 2,
+          "sugar": 13,
+          "sodium": 320,
+          "cholesterol": 15,
+          "saturatedFat": 1.5
         }
       },
       {
         "mealType": "dinner",
-        "time": "19:30",
-        "name": "Pasta with chicken",
+        "time": "19:20",
+        "name": "Pasta with vegetables and chicken",
         "amount": "1 bowl",
-        "calories": 710,
+        "calories": 534,
         "macros": {
-          "carbs": 74,
-          "protein": 38,
-          "fat": 22,
+          "carbs": 66,
+          "protein": 27,
+          "fat": 18,
           "fiber": 6,
-          "sodium": 620
+          "sugar": 7,
+          "sodium": 540,
+          "cholesterol": 80,
+          "saturatedFat": 4.5
         }
       }
-    ]
-  },
-  "dates": {
-    "2026-03-17": [
+    ],
+    "sunday": [
+      {
+        "mealType": "breakfast",
+        "time": "08:30",
+        "name": "Eggs, oats and fruit",
+        "amount": "1 plate",
+        "calories": 400,
+        "macros": {
+          "carbs": 37,
+          "protein": 27,
+          "fat": 16,
+          "fiber": 5,
+          "sugar": 10,
+          "sodium": 280,
+          "cholesterol": 210,
+          "saturatedFat": 4.5
+        }
+      },
       {
         "mealType": "lunch",
-        "time": "12:15",
-        "name": "Rajma with rice",
+        "time": "12:45",
+        "name": "Chole with rice",
         "amount": "1 bowl + 1 cup rice",
-        "calories": 540,
+        "calories": 446,
         "macros": {
-          "carbs": 69,
-          "protein": 18,
-          "fat": 8,
-          "fiber": 14
+          "carbs": 72,
+          "protein": 19,
+          "fat": 10,
+          "fiber": 14,
+          "sugar": 8,
+          "sodium": 430,
+          "cholesterol": 0,
+          "saturatedFat": 1
+        }
+      },
+      {
+        "mealType": "snack",
+        "time": "15:30",
+        "name": "Greek yogurt and banana",
+        "amount": "1 serving",
+        "calories": 216,
+        "macros": {
+          "carbs": 28,
+          "protein": 17,
+          "fat": 4,
+          "fiber": 3,
+          "sugar": 18,
+          "sodium": 95,
+          "cholesterol": 8,
+          "saturatedFat": 1.5
+        }
+      },
+      {
+        "mealType": "dinner",
+        "time": "19:00",
+        "name": "Restaurant grilled chicken meal",
+        "amount": "1 plate",
+        "calories": 465,
+        "macros": {
+          "carbs": 36,
+          "protein": 42,
+          "fat": 17,
+          "fiber": 6,
+          "sugar": 8,
+          "sodium": 820,
+          "cholesterol": 110,
+          "saturatedFat": 4
         }
       }
     ]
