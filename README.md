@@ -1,6 +1,22 @@
-#+ HealthyCal — Mindful Eating
+# HealthyCal — Mindful Eating
+
+![React](https://img.shields.io/badge/REACT-20232A?style=for-the-badge&logo=react&logoColor=61DAFB)
+![Vite](https://img.shields.io/badge/VITE-646CFF?style=for-the-badge&logo=vite&logoColor=white)
+![Node.js](https://img.shields.io/badge/NODE.JS-339933?style=for-the-badge&logo=nodedotjs&logoColor=white)
+![Express](https://img.shields.io/badge/EXPRESS-000000?style=for-the-badge&logo=express&logoColor=white)
+![MongoDB](https://img.shields.io/badge/MONGODB-47A248?style=for-the-badge&logo=mongodb&logoColor=white)
 
 HealthyCal is a full-stack web application for tracking meals, nutrition, and daily tips to support mindful eating. It includes a React + Vite frontend and an Express + MongoDB backend with authentication, meal logging and nutrition lookup features.
+
+---
+
+## Demo
+
+[![Live Site](https://img.shields.io/badge/VIEW_LIVE_SITE-healthy--cal.vercel.app-0A66C2?style=for-the-badge&logo=vercel&logoColor=white)](https://healthy-cal.vercel.app/)
+
+<video src="public/healthycal-demo.mp4" controls width="100%">
+  Your browser does not support the video tag. Watch the demo here: [public/healthycal-demo.mp4](public/healthycal-demo.mp4).
+</video>
 
 ## Features
 - User registration and login (JWT-based)
