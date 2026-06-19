@@ -25,9 +25,14 @@ if [ ! -f "$SCRIPT_DIR/meal-log.env" ]; then
     exit 1
 fi
 
+if ! NODE_BIN=$(command -v node); then
+    echo "Could not find node. Install Node.js or set NODE_BIN before running this installer." >&2
+    exit 1
+fi
+
 HOUR=${SCHEDULE%:*}
 MINUTE=${SCHEDULE#*:}
-CRON_COMMAND="cd '$ROOT_DIR' && /bin/sh '$RUNNER' >> '$LOG_FILE' 2>&1"
+CRON_COMMAND="cd '$ROOT_DIR' && NODE_BIN='$NODE_BIN' /bin/sh '$RUNNER' >> '$LOG_FILE' 2>&1"
 CRON_LINE="$MINUTE $HOUR * * * $CRON_COMMAND $MARKER"
 TEMP_FILE=$(mktemp)
 
@@ -49,3 +54,4 @@ crontab "$TEMP_FILE"
 printf 'Installed HealthyCal daily meal-log job at %s.\n' "$SCHEDULE"
 printf 'Log file: %s\n' "$LOG_FILE"
 printf 'Runner: %s\n' "$RUNNER"
+printf 'Node: %s\n' "$NODE_BIN"

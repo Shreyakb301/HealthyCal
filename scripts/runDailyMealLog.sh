@@ -51,4 +51,6 @@ if [ "$DRY_RUN" != "true" ] && { [ -z "${MEAL_LOG_BASE_URL:-}" ] || [ -z "${MEAL
 fi
 
 cd "$ROOT_DIR"
-exec node scripts/pushDailyMealLog.js "$@"
+NODE_BIN=${NODE_BIN:-node}
+echo "[$(date '+%Y-%m-%d %H:%M:%S %Z')] Running HealthyCal daily meal push with $NODE_BIN"
+exec "$NODE_BIN" scripts/pushDailyMealLog.js "$@"
